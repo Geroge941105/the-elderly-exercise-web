@@ -19,6 +19,9 @@
       --success: #15803D;
       --success-dark: #14532D;
       --accent: #B45309;
+      --accent-dark: #92400E;
+      --danger: #B91C1C;
+      --danger-dark: #991B1B;
       --border: #CBD5E1;
       --radius: 16px;
     }
@@ -175,6 +178,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-bottom: 12px;
     }
 
@@ -187,6 +192,18 @@
       border-radius: 10px;
     }
 
+    .paused-banner {
+      background-color: #FEF3C7;
+      color: #92400E;
+      border: 2px solid #F59E0B;
+      border-radius: 12px;
+      padding: 12px 16px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
     .timer-display {
       font-size: 3.5rem;
       font-weight: 900;
@@ -194,6 +211,10 @@
       color: var(--primary);
       font-variant-numeric: tabular-nums;
       margin: 8px 0;
+    }
+
+    .timer-display.paused {
+      color: var(--accent);
     }
 
     .progress-track {
@@ -278,11 +299,17 @@
     .btn-primary:hover { background-color: var(--primary-dark); }
     .btn-success { background-color: var(--success); }
     .btn-success:hover { background-color: var(--success-dark); }
-    .btn-danger { background-color: #B91C1C; }
+    .btn-warning { background-color: var(--accent); }
+    .btn-warning:hover { background-color: var(--accent-dark); }
+    .btn-danger { background-color: var(--danger); }
+    .btn-danger:hover { background-color: var(--danger-dark); }
     .btn-outline {
       background-color: #FFFFFF;
       color: var(--text-main);
       border: 3px solid var(--text-main);
+    }
+    .btn-outline:hover {
+      background-color: #F1F5F9;
     }
 
     /* 選填稱呼輸入框 */
@@ -310,17 +337,39 @@
       background-color: #FFFFFF;
     }
 
-    /* 成就徽章 Canvas */
+    /* 成就徽章顯示區（支援手機長按儲存） */
     .canvas-wrapper {
       text-align: center;
       margin: 16px 0;
     }
 
-    canvas#badgeCanvas {
-      max-width: 100%;
+    .badge-preview-img {
+      width: 100%;
+      max-width: 600px;
       height: auto;
+      display: block;
+      margin: 0 auto;
       border-radius: var(--radius);
       border: 3px solid var(--text-main);
+    }
+
+    .save-hint {
+      font-size: 1rem;
+      color: var(--text-sub);
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    .complete-note {
+      background-color: #EFF6FF;
+      border: 2px solid #93C5FD;
+      color: var(--primary-dark);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1.15rem;
+      font-weight: 700;
+      text-align: center;
+      margin: 12px 0;
     }
 
     /* 雲端連線狀態標籤 */
@@ -328,7 +377,7 @@
       display: inline-block;
       font-size: 1rem;
       font-weight: 700;
-      padding: 4px 12px;
+      padding: 6px 12px;
       border-radius: 8px;
       background-color: #DCFCE7;
       color: #166534;
@@ -338,6 +387,20 @@
     .cloud-status.error {
       background-color: #FEE2E2;
       color: #991B1B;
+    }
+
+    /* 動態牆頂部返回運動橫幅 */
+    .resume-workout-banner {
+      background-color: #FEF3C7;
+      border: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
     /* 零打字社群動態牆 */
@@ -377,6 +440,71 @@
       border: 2px solid var(--text-main);
     }
 
+    /* 輕量化純 CSS 數位成就徽章（免存 Base64 至 Firestore） */
+    .css-badge-card {
+      max-width: 460px;
+      margin: 12px auto;
+      background-color: #F8FAFC;
+      border: 4px solid var(--text-main);
+      border-radius: 14px;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    .css-badge-top {
+      background-color: var(--primary);
+      color: #FFFFFF;
+      font-size: 1.15rem;
+      font-weight: 800;
+      padding: 10px 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .css-badge-body {
+      padding: 20px 16px;
+    }
+
+    .css-badge-circle {
+      width: 124px;
+      height: 124px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background-color: #FEF3C7;
+      border: 5px solid var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.3rem;
+      font-weight: 900;
+      color: #78350F;
+    }
+
+    .css-badge-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .css-badge-meta {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+
+    .demo-tag {
+      display: inline-block;
+      background-color: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #F59E0B;
+      font-size: 0.9rem;
+      font-weight: 800;
+      padding: 2px 10px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
     .reaction-bar {
       display: flex;
       gap: 10px;
@@ -395,6 +523,11 @@
       cursor: pointer;
     }
 
+    .react-btn:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
     .react-btn.reacted {
       background-color: #DBEAFE;
       border-color: var(--primary);
@@ -409,6 +542,68 @@
       font-weight: 700;
     }
 
+    /* 確認結束防誤觸對話框（高對比大按鈕） */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(15, 23, 42, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    .modal-box {
+      background-color: #FFFFFF;
+      border: 4px solid var(--text-main);
+      border-radius: var(--radius);
+      max-width: 480px;
+      width: 100%;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-box h3 {
+      font-size: 1.65rem;
+      margin-bottom: 12px;
+      color: var(--text-main);
+    }
+
+    .modal-box p {
+      font-size: 1.2rem;
+      color: var(--text-sub);
+      margin-bottom: 24px;
+    }
+
+    /* 頁尾測試重置工具列 */
+    footer {
+      max-width: 760px;
+      margin: 28px auto 0;
+      padding: 0 16px;
+      text-align: center;
+      color: var(--text-sub);
+      font-size: 0.95rem;
+    }
+
+    .reset-link-btn {
+      margin-top: 8px;
+      background: none;
+      border: 2px solid var(--border);
+      color: var(--text-sub);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .reset-link-btn:hover {
+      border-color: var(--text-main);
+      color: var(--text-main);
+    }
+
     .hidden {
       display: none !important;
     }
@@ -418,7 +613,7 @@
 
   <header>
     <h1>數位社會處方｜健康動一動</h1>
-    <div class="streak-banner" id="headerStreak">🔥 目前連續運動：1 天</div>
+    <div class="streak-banner" id="headerStreak">🔥 目前連續運動：0 天</div>
   </header>
 
   <!-- 雙分頁極簡導覽 -->
@@ -432,7 +627,7 @@
          分頁一：運動引導與簽到模組
          ========================================= -->
     <section id="sectionExercise" class="section active">
-      
+
       <!-- 步驟 A：選擇難度與時長 -->
       <div id="viewSelect" class="card">
         <h2>請選擇今天的運動難度</h2>
@@ -458,20 +653,24 @@
           <button class="mode-btn" onclick="startWorkout('demo')">
             <div>
               <span class="mode-title">展示體驗模式（快速測試）</span>
-              <span class="mode-desc">課堂與競賽現場展示專用，15 秒體驗完整流程</span>
+              <span class="mode-desc">課堂與競賽現場展示專用，15 秒體驗完整流程（不影響真實簽到天數）</span>
             </div>
             <span class="mode-badge demo">15 秒</span>
           </button>
         </div>
       </div>
 
-      <!-- 步驟 B：運動引導進行中（動態圖解輪播 + 語音倒數） -->
+      <!-- 步驟 B：運動引導進行中（動態圖解輪播 + 語音倒數 + 暫停控制） -->
       <div id="viewActive" class="card hidden">
         <div class="workout-header">
           <span class="step-indicator" id="stepCounter">動作 1 / 3</span>
           <button class="btn-outline" style="padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;" onclick="toggleAudio()">
             <span id="audioStatusText">🔊 語音開啟中</span>
           </button>
+        </div>
+
+        <div id="pausedBanner" class="paused-banner hidden">
+          ⏸ 運動已暫停，休息一下再按下方「繼續運動」
         </div>
 
         <h2 id="exerciseTitle" style="text-align: center; font-size: 1.8rem;">雙手向上伸展</h2>
@@ -490,19 +689,25 @@
           跟著節拍慢慢吸氣，雙手向上舉高，肩膀放輕鬆。
         </div>
 
-        <div class="action-row">
+        <div class="action-row" style="margin-bottom: 12px;">
+          <button class="btn-large btn-warning" id="btnPauseResume" onclick="togglePause()">⏸ 暫停運動</button>
           <button class="btn-large btn-primary" onclick="repeatVoice()">🔊 再聽一次指導</button>
-          <button class="btn-large btn-danger" onclick="stopWorkout()">⏹ 結束運動</button>
+        </div>
+        <div class="action-row">
+          <button class="btn-large btn-danger" onclick="requestStopWorkout()">⏹ 結束運動</button>
         </div>
       </div>
 
       <!-- 步驟 C：運動完成與 Canvas 成就徽章生成 -->
       <div id="viewComplete" class="card hidden">
         <h2 style="text-align: center; color: var(--success); font-size: 1.9rem;">🎉 恭喜完成今日運動！</h2>
-        <p style="text-align: center; color: var(--text-sub);">系統已自動為您記錄簽到天數，並製作專屬成就徽章：</p>
+        <div class="complete-note" id="completeStatusText">系統已自動為您記錄簽到天數，並製作專屬成就徽章：</div>
 
         <div class="canvas-wrapper">
-          <canvas id="badgeCanvas" width="600" height="400"></canvas>
+          <!-- Canvas 負責繪圖合成；img 供手機/LINE 瀏覽器長按儲存 -->
+          <canvas id="badgeCanvas" width="600" height="400" class="hidden"></canvas>
+          <img id="badgePreviewImg" class="badge-preview-img" alt="數位健康成就徽章" />
+          <p class="save-hint">💡 若使用手機或 LINE 開啟，可直接長按上方圖片儲存至相簿</p>
         </div>
 
         <div class="name-input-group">
@@ -510,30 +715,56 @@
           <input type="text" id="userNameInput" placeholder="例如：王阿公、陳阿嬤" maxlength="15" />
         </div>
 
-        <div class="action-row">
+        <div class="action-row" style="margin-bottom: 12px;">
           <button class="btn-large btn-success" id="btnPublish" onclick="publishToWall()">📢 一鍵發布到雲端動態牆</button>
-          <button class="btn-large btn-primary" onclick="downloadBadge()">💾 儲存徽章圖片</button>
         </div>
-        <div style="margin-top: 12px;">
+        <div class="action-row" style="margin-bottom: 12px;">
+          <button class="btn-large btn-primary" onclick="shareBadge()">📤 分享給親友 (LINE)</button>
+          <button class="btn-large btn-outline" onclick="downloadBadge()">💾 下載徽章圖片</button>
+        </div>
+        <div>
           <button class="btn-large btn-outline" style="width: 100%;" onclick="resetToHome()">返回運動首頁</button>
         </div>
       </div>
-
     </section>
 
     <!-- =========================================
          分頁二：雲端同步零打字社群動態牆
          ========================================= -->
     <section id="sectionSocial" class="section">
+      <!-- 運動中切換至此頁時顯示的返回提示 -->
+      <div id="socialPausedBanner" class="resume-workout-banner hidden">
+        <span style="font-weight: 800; color: #78350F;">⏸ 您剛才的運動已自動暫停</span>
+        <button class="btn-primary" style="padding: 10px 18px; border: none; border-radius: 10px; color: #fff; font-size: 1.1rem; font-weight: 800; cursor: pointer;" onclick="switchTab('exercise')">
+          返回繼續運動
+        </button>
+      </div>
+
       <div class="card" style="background-color: #EFF6FF; border-color: var(--primary);">
         <h2>鄰里與親友健康佈告欄</h2>
         <p>不用打字！點擊下方的大按鈕，就能即時幫所有連線的長輩與鄰居加油打氣。</p>
-        <div class="cloud-status" id="cloudStatus">☁️ 正在連線至雲端動態牆...</div>
+        <div class="cloud-status" id="cloudStatus">⏳ 正在連線至雲端動態牆...</div>
       </div>
-
       <div id="feedContainer"></div>
     </section>
   </main>
+
+  <footer>
+    <div>數位社會處方｜長青友善極簡運動平台</div>
+    <button class="reset-link-btn" onclick="resetLocalDemoData()">🔄 重置本機測試紀錄（現場展示用）</button>
+  </footer>
+
+  <!-- 防誤觸：確認結束運動對話框 -->
+  <div id="confirmStopModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="stopModalTitle">
+    <div class="modal-box">
+      <h3 id="stopModalTitle">確定要結束運動嗎？</h3>
+      <p>現在結束將不會記錄這次的簽到天數喔！如果只是想休息一下，可以按「繼續運動」。</p>
+      <div class="action-row">
+        <button class="btn-large btn-success" onclick="cancelStopWorkout()">▶ 繼續運動</button>
+        <button class="btn-large btn-danger" onclick="confirmStopWorkout()">⏹ 確定結束</button>
+      </div>
+    </div>
+  </div>
 
   <script type="module">
     /* =========================================
@@ -554,8 +785,9 @@
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
+    // ⚠️ 請核對 apiKey 是否與你 Firebase Console / 原 GitHub index.html 完全一致
     const firebaseConfig = {
-      apiKey: "AIzaSyB9CiaiOOq1Gj3wLQTmEnMTX37UVJAkhbg",
+      apiKey: "AIzaSyB9Ciai00q1Gj3wLQTmEnMTX37UVJAkhbg",
       authDomain: "the-elderly-exercise-web.firebaseapp.com",
       projectId: "the-elderly-exercise-web",
       storageBucket: "the-elderly-exercise-web.firebasestorage.app",
@@ -710,8 +942,9 @@
     };
 
     /* =========================================
-       4. 狀態變數與本機紀錄
+       4. 狀態變數與日期簽到邏輯 (LocalStorage)
        ========================================= */
+    let currentModeKey = null;
     let currentRoutine = null;
     let currentStepIdx = 0;
     let remainingSec = 0;
@@ -720,39 +953,120 @@
     let frameIndex = 0;
     let timerInterval = null;
     let carouselInterval = null;
+
+    let isWorkoutActive = false;
+    let isPaused = false;
+    let wasPausedBeforeModal = false;
+
     let audioEnabled = true;
+    let sharedAudioCtx = null;
+    let zhTwVoice = null;
+
     let latestBadgeDataUrl = "";
+    let latestBadgeMeta = { streakDays: 1, routineName: "", dateStr: "", isDemo: false };
     let badgePublished = false;
 
-    let streakDays = parseInt(localStorage.getItem("usr_streak_days") || "1", 10);
-    let userReactedMap = JSON.parse(localStorage.getItem("usr_reacted_map") || "{}");
+    const pendingReactions = new Set();
 
-    const savedName = localStorage.getItem("usr_display_name") || "";
-    document.getElementById("userNameInput").value = savedName;
+    // 取得本地時區日期字串 YYYY-MM-DD（避免 UTC 時差造成跨日誤判）
+    function getLocalDateStr(offsetDays = 0) {
+      const d = new Date();
+      d.setDate(d.getDate() + offsetDays);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function readStoredStreak() {
+      const days = parseInt(localStorage.getItem("usr_streak_days") || "0", 10);
+      const lastDate = localStorage.getItem("usr_last_checkin_date") || "";
+      const today = getLocalDateStr(0);
+      const yesterday = getLocalDateStr(-1);
+
+      // 若最後簽到日不是今天也不是昨天，代表連續天數已中斷
+      if (!lastDate || (lastDate !== today && lastDate !== yesterday)) {
+        return { days: 0, lastDate };
+      }
+      return { days: Math.max(days, 0), lastDate };
+    }
+
+    let userReactedMap = JSON.parse(localStorage.getItem("usr_reacted_map") || "{}");
+    document.getElementById("userNameInput").value = localStorage.getItem("usr_display_name") || "";
 
     function updateStreakBanner() {
-      document.getElementById("headerStreak").textContent = `🔥 目前連續運動：${streakDays} 天`;
+      const { days } = readStoredStreak();
+      document.getElementById("headerStreak").textContent = `🔥 目前連續運動：${days} 天`;
     }
     updateStreakBanner();
 
     /* =========================================
-       5. Web Speech API 語音合成 & 節拍音效
+       5. 單例 AudioContext & 跨裝置 Web Speech API
        ========================================= */
+    function initAudioContext() {
+      if (!audioEnabled) return null;
+      try {
+        if (!sharedAudioCtx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            sharedAudioCtx = new AudioCtx();
+          }
+        }
+        if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
+          sharedAudioCtx.resume().catch(() => {});
+        }
+      } catch (e) {
+        return null;
+      }
+      return sharedAudioCtx;
+    }
+
+    function loadZhTwVoice() {
+      if (!("speechSynthesis" in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return;
+
+      zhTwVoice =
+        voices.find(v => v.lang === "zh-TW") ||
+        voices.find(v => v.lang.toLowerCase().includes("zh-tw")) ||
+        voices.find(v => v.lang.toLowerCase().startsWith("zh")) ||
+        null;
+    }
+
+    if ("speechSynthesis" in window) {
+      loadZhTwVoice();
+      window.speechSynthesis.onvoiceschanged = loadZhTwVoice;
+    }
+
+    // 在使用者點擊按鈕當下預熱語音引擎（解決 iOS Safari 無法在 setInterval 播音問題）
+    function prewarmSpeech() {
+      if (!audioEnabled || !("speechSynthesis" in window)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const silent = new SpeechSynthesisUtterance("");
+        silent.volume = 0;
+        window.speechSynthesis.speak(silent);
+      } catch (e) {}
+    }
+
     function speakText(text) {
       if (!audioEnabled || !("speechSynthesis" in window)) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = "zh-TW";
-      utterance.rate = 0.92;
-      utterance.pitch = 1.05;
-      window.speechSynthesis.speak(utterance);
+      try {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "zh-TW";
+        if (zhTwVoice) utterance.voice = zhTwVoice;
+        utterance.rate = 0.92;
+        utterance.pitch = 1.05;
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {}
     }
 
     function playSoftBeep() {
       if (!audioEnabled) return;
+      const ctx = initAudioContext();
+      if (!ctx) return;
       try {
-        const AudioCtx = window.AudioContext || window.webkitAudioContext;
-        const ctx = new AudioCtx();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
@@ -769,31 +1083,55 @@
     function toggleAudio() {
       audioEnabled = !audioEnabled;
       document.getElementById("audioStatusText").textContent = audioEnabled ? "🔊 語音開啟中" : "🔇 語音已靜音";
-      if (!audioEnabled && "speechSynthesis" in window) {
+      if (audioEnabled) {
+        initAudioContext();
+      } else if ("speechSynthesis" in window) {
         window.speechSynthesis.cancel();
       }
     }
 
     function repeatVoice() {
-      if (!currentRoutine) return;
+      if (!currentRoutine || !isWorkoutActive) return;
+      initAudioContext();
       const step = currentRoutine.steps[currentStepIdx];
       speakText(`${step.title}。${step.instruction}`);
     }
 
     /* =========================================
-       6. 運動計時狀態機與動態圖片輪播
+       6. 運動計時狀態機、暫停控制與防誤觸確認
        ========================================= */
+    function clearAllTimers() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      if (carouselInterval) {
+        clearInterval(carouselInterval);
+        carouselInterval = null;
+      }
+    }
+
     function startWorkout(modeKey) {
+      // 同步使用者點擊事件中初始化音效與語音
+      initAudioContext();
+      prewarmSpeech();
+
+      clearAllTimers();
+      currentModeKey = modeKey;
       currentRoutine = ROUTINES[modeKey];
       currentStepIdx = 0;
       elapsedRoutineSec = 0;
       totalRoutineSec = currentRoutine.steps.reduce((sum, s) => sum + s.duration, 0);
       badgePublished = false;
+      isWorkoutActive = true;
+      isPaused = false;
 
       const btnPublish = document.getElementById("btnPublish");
       btnPublish.disabled = false;
       btnPublish.textContent = "📢 一鍵發布到雲端動態牆";
 
+      updatePauseUI();
+      document.getElementById("socialPausedBanner").classList.add("hidden");
       document.getElementById("viewSelect").classList.add("hidden");
       document.getElementById("viewComplete").classList.add("hidden");
       document.getElementById("viewActive").classList.remove("hidden");
@@ -801,12 +1139,15 @@
       loadStep(0);
 
       timerInterval = setInterval(() => {
+        if (isPaused || !isWorkoutActive) return;
+
         remainingSec--;
         elapsedRoutineSec++;
         updateTimerUI();
         playSoftBeep();
 
-        if (remainingSec === 10) {
+        const step = currentRoutine.steps[currentStepIdx];
+        if (remainingSec === 10 && step.duration > 10) {
           speakText("阿公阿嬤很棒喔，剩下十秒鐘，加油！");
         }
 
@@ -834,8 +1175,9 @@
       renderCarouselFrame();
       speakText(`${step.title}。${step.instruction}`);
 
-      clearInterval(carouselInterval);
+      if (carouselInterval) clearInterval(carouselInterval);
       carouselInterval = setInterval(() => {
+        if (isPaused || !isWorkoutActive) return;
         frameIndex = (frameIndex + 1) % step.frames.length;
         renderCarouselFrame();
       }, 1500);
@@ -849,40 +1191,146 @@
     }
 
     function updateTimerUI() {
-      const mins = String(Math.floor(remainingSec / 60)).padStart(2, "0");
-      const secs = String(remainingSec % 60).padStart(2, "0");
+      const safeSec = Math.max(0, remainingSec);
+      const mins = String(Math.floor(safeSec / 60)).padStart(2, "0");
+      const secs = String(safeSec % 60).padStart(2, "0");
       document.getElementById("timerText").textContent = `${mins}:${secs}`;
 
       const pct = Math.min(100, Math.round((elapsedRoutineSec / totalRoutineSec) * 100));
       document.getElementById("progressBar").style.width = `${pct}%`;
     }
 
-    function stopWorkout() {
-      clearInterval(timerInterval);
-      clearInterval(carouselInterval);
+    function updatePauseUI() {
+      const btn = document.getElementById("btnPauseResume");
+      const banner = document.getElementById("pausedBanner");
+      const timerEl = document.getElementById("timerText");
+
+      if (isPaused) {
+        btn.textContent = "▶ 繼續運動";
+        btn.classList.remove("btn-warning");
+        btn.classList.add("btn-success");
+        banner.classList.remove("hidden");
+        timerEl.classList.add("paused");
+      } else {
+        btn.textContent = "⏸ 暫停運動";
+        btn.classList.remove("btn-success");
+        btn.classList.add("btn-warning");
+        banner.classList.add("hidden");
+        timerEl.classList.remove("paused");
+      }
+    }
+
+    function pauseWorkout(fromTabSwitch = false) {
+      if (!isWorkoutActive || isPaused) return;
+      isPaused = true;
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      updatePauseUI();
+      if (fromTabSwitch) {
+        document.getElementById("socialPausedBanner").classList.remove("hidden");
+      }
+    }
+
+    function resumeWorkout() {
+      if (!isWorkoutActive || !isPaused) return;
+      initAudioContext();
+      isPaused = false;
+      updatePauseUI();
+      document.getElementById("socialPausedBanner").classList.add("hidden");
+      speakText("繼續運動，加油！");
+    }
+
+    function togglePause() {
+      if (!isWorkoutActive) return;
+      if (isPaused) {
+        resumeWorkout();
+      } else {
+        pauseWorkout(false);
+      }
+    }
+
+    // 防誤觸：點擊結束運動時先暫停並開啟大按鈕確認框
+    function requestStopWorkout() {
+      if (!isWorkoutActive) return;
+      wasPausedBeforeModal = isPaused;
+      pauseWorkout(false);
+      document.getElementById("confirmStopModal").classList.remove("hidden");
+    }
+
+    function cancelStopWorkout() {
+      document.getElementById("confirmStopModal").classList.add("hidden");
+      if (!wasPausedBeforeModal) {
+        resumeWorkout();
+      }
+    }
+
+    function confirmStopWorkout() {
+      document.getElementById("confirmStopModal").classList.add("hidden");
+      clearAllTimers();
+      isWorkoutActive = false;
+      isPaused = false;
+      if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      document.getElementById("socialPausedBanner").classList.add("hidden");
       resetToHome();
     }
 
     function finishWorkout() {
-      clearInterval(timerInterval);
-      clearInterval(carouselInterval);
+      clearAllTimers();
+      isWorkoutActive = false;
+      isPaused = false;
+      document.getElementById("socialPausedBanner").classList.add("hidden");
 
-      streakDays += 1;
-      localStorage.setItem("usr_streak_days", String(streakDays));
+      const todayStr = getLocalDateStr(0);
+      const yesterdayStr = getLocalDateStr(-1);
+      const todayDisplayStr = new Date().toLocaleDateString("zh-TW");
+      const statusEl = document.getElementById("completeStatusText");
+
+      let badgeStreakDays = 1;
+
+      if (currentModeKey === "demo") {
+        // 展示模式不污染本機真實連續天數
+        const { days } = readStoredStreak();
+        badgeStreakDays = Math.max(days, 1);
+        statusEl.textContent = "展示體驗模式完成！此模式僅供流程展示，不會更動您本機的真實每日簽到天數。";
+      } else {
+        const storedDays = parseInt(localStorage.getItem("usr_streak_days") || "0", 10);
+        const lastDate = localStorage.getItem("usr_last_checkin_date") || "";
+
+        if (lastDate === todayStr) {
+          badgeStreakDays = Math.max(storedDays, 1);
+          statusEl.textContent = `今日已完成過簽到！維持連續運動 ${badgeStreakDays} 天紀錄，多動更健康！`;
+        } else if (lastDate === yesterdayStr) {
+          badgeStreakDays = Math.max(storedDays, 0) + 1;
+          localStorage.setItem("usr_streak_days", String(badgeStreakDays));
+          localStorage.setItem("usr_last_checkin_date", todayStr);
+          statusEl.textContent = `太棒了！系統已自動簽到，累計連續運動 ${badgeStreakDays} 天！`;
+        } else {
+          badgeStreakDays = 1;
+          localStorage.setItem("usr_streak_days", "1");
+          localStorage.setItem("usr_last_checkin_date", todayStr);
+          statusEl.textContent = "已成功為您記錄今日簽到，正式開啟新的連續運動紀錄！";
+        }
+      }
+
       updateStreakBanner();
+
+      latestBadgeMeta = {
+        streakDays: badgeStreakDays,
+        routineName: currentRoutine.name,
+        dateStr: todayDisplayStr,
+        isDemo: currentModeKey === "demo"
+      };
 
       document.getElementById("viewActive").classList.add("hidden");
       document.getElementById("viewComplete").classList.remove("hidden");
 
-      speakText(`太棒了！恭喜完成今天的運動，您已經連續運動 ${streakDays} 天了！`);
-      drawAchievementBadge();
+      speakText(`太棒了！恭喜完成今天的運動，您已經連續運動 ${badgeStreakDays} 天了！`);
+      drawAchievementBadge(latestBadgeMeta);
     }
 
     /* =========================================
-       7. HTML5 Canvas 繪製極簡數位成就徽章
+       7. HTML5 Canvas 繪製成就徽章 + 手機 Web Share 分享
        ========================================= */
-    function drawAchievementBadge() {
+    function drawAchievementBadge({ streakDays, routineName, dateStr }) {
       const canvas = document.getElementById("badgeCanvas");
       const ctx = canvas.getContext("2d");
 
@@ -916,25 +1364,52 @@
       ctx.font = "bold 30px sans-serif";
       ctx.fillText(`連續運動 ${streakDays} 天達成！`, canvas.width / 2, 315);
 
-      const todayStr = new Date().toLocaleDateString("zh-TW");
       ctx.fillStyle = "#334155";
       ctx.font = "bold 20px sans-serif";
-      ctx.fillText(`${currentRoutine.name} ｜ ${todayStr}`, canvas.width / 2, 355);
+      ctx.fillText(`${routineName} ｜ ${dateStr}`, canvas.width / 2, 355);
 
-      // 輸出壓縮 JPEG，確保檔案輕量且快速寫入 Firestore
-      latestBadgeDataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      // 產生輕量化 JPEG 並顯示於 img 標籤，讓手機／LINE 瀏覽器可長按儲存
+      latestBadgeDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      document.getElementById("badgePreviewImg").src = latestBadgeDataUrl;
+    }
+
+    async function shareBadge() {
+      const canvas = document.getElementById("badgeCanvas");
+      const fileName = `健康成就徽章_連續${latestBadgeMeta.streakDays}天.png`;
+
+      if (navigator.share && canvas.toBlob) {
+        try {
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+          if (blob) {
+            const file = new File([blob], fileName, { type: "image/png" });
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+              await navigator.share({
+                title: "數位社會處方｜健康運動成就卡",
+                text: `我今天完成了「${latestBadgeMeta.routineName}」，連續運動 ${latestBadgeMeta.streakDays} 天！`,
+                files: [file]
+              });
+              return;
+            }
+          }
+        } catch (err) {
+          if (err && err.name === "AbortError") return; // 使用者主動取消分享
+        }
+      }
+
+      // 裝置不支援 Web Share API（例如桌機瀏覽器）時，自動改為下載圖片
+      downloadBadge();
     }
 
     function downloadBadge() {
       if (!latestBadgeDataUrl) return;
       const link = document.createElement("a");
-      link.download = `健康成就徽章_連續${streakDays}天.jpg`;
+      link.download = `健康成就徽章_連續${latestBadgeMeta.streakDays}天.jpg`;
       link.href = latestBadgeDataUrl;
       link.click();
     }
 
     /* =========================================
-       8. Firestore 雲端動態牆讀寫與即時監聽
+       8. Firestore 雲端動態牆（輕量結構化資料，不存 Base64）
        ========================================= */
     async function publishToWall() {
       if (badgePublished) {
@@ -946,17 +1421,21 @@
       btnPublish.disabled = true;
       btnPublish.textContent = "⏳ 正在上傳至雲端動態牆...";
 
-      const rawName = document.getElementById("userNameInput").value.trim();
+      const rawName = document.getElementById("userNameInput").value.trim().slice(0, 15);
       const authorName = rawName || "長青運動員";
       if (rawName) {
         localStorage.setItem("usr_display_name", rawName);
       }
 
       try {
+        // 僅寫入輕量欄位，不儲存肥大 Base64 圖片
         await addDoc(postsCollection, {
           author: authorName,
-          summary: `完成「${currentRoutine.name}」，達成連續運動 ${streakDays} 天！`,
-          badgeImg: latestBadgeDataUrl,
+          routineName: latestBadgeMeta.routineName,
+          streakDays: latestBadgeMeta.streakDays,
+          dateStr: latestBadgeMeta.dateStr,
+          isDemo: latestBadgeMeta.isDemo,
+          summary: `完成「${latestBadgeMeta.routineName}」，達成連續運動 ${latestBadgeMeta.streakDays} 天！`,
           reactions: { like: 0, clap: 0, heart: 0 },
           createdAt: serverTimestamp()
         });
@@ -966,14 +1445,18 @@
         switchTab("social");
       } catch (err) {
         console.error("發布失敗：", err);
-        alert("發布至雲端失敗，請確認 Firebase Firestore 資料庫已建立並開啟測試模式。");
+        const msg =
+          err && err.code === "permission-denied"
+            ? "雲端寫入權限不足，請確認 Firebase Firestore 安全性規則尚未過期。"
+            : "發布至雲端失敗，請檢查網路連線後再試一次。";
+        alert(msg);
         btnPublish.disabled = false;
         btnPublish.textContent = "📢 一鍵發布到雲端動態牆";
       }
     }
 
     function formatTimestamp(ts) {
-      if (!ts) return "剛剛";
+      if (!ts || typeof ts.toDate !== "function") return "剛剛";
       const date = ts.toDate();
       const month = date.getMonth() + 1;
       const day = date.getDate();
@@ -982,14 +1465,37 @@
       return `${month}/${day} ${hours}:${mins}`;
     }
 
-    // 即時監聽雲端 Firestore 資料變化（所有連線裝置同步更新）
+    function renderBadgeBlock(post) {
+      // 向下相容舊資料：若有合法 data:image Base64 則直接顯示
+      if (typeof post.badgeImg === "string" && post.badgeImg.startsWith("data:image/")) {
+        return `<img class="post-badge-img" src="${post.badgeImg}" alt="數位成就徽章" />`;
+      }
+
+      // 新版輕量資料：以純 HTML/CSS 繪製高對比向量徽章
+      const days = Number.isFinite(Number(post.streakDays)) ? Number(post.streakDays) : 1;
+      const routine = escapeHtml(post.routineName || "每日健康運動");
+      const dateStr = escapeHtml(post.dateStr || formatTimestamp(post.createdAt));
+
+      return `
+        <div class="css-badge-card">
+          <div class="css-badge-top">數位社會處方｜健康運動成就卡</div>
+          <div class="css-badge-body">
+            <div class="css-badge-circle">${days} 天</div>
+            <div class="css-badge-title">連續運動 ${days} 天達成！</div>
+            <div class="css-badge-meta">${routine} ｜ ${dateStr}</div>
+          </div>
+        </div>
+      `;
+    }
+
     const postsQuery = query(postsCollection, orderBy("createdAt", "desc"), limit(30));
+
     onSnapshot(
       postsQuery,
       (snapshot) => {
         const statusEl = document.getElementById("cloudStatus");
         statusEl.className = "cloud-status";
-        statusEl.textContent = `☁️ 雲端即時連線中（目前共有 ${snapshot.size} 則健康動態）`;
+        statusEl.textContent = `🟢 雲端即時連線中（目前共有 ${snapshot.size} 則健康動態）`;
 
         const container = document.getElementById("feedContainer");
         container.innerHTML = "";
@@ -1011,26 +1517,24 @@
           const card = document.createElement("div");
           card.className = "post-card";
 
-          const badgeHtml = post.badgeImg
-            ? `<img class="post-badge-img" src="${post.badgeImg}" alt="數位成就徽章" />`
-            : "";
+          const demoBadge = post.isDemo ? `<span class="demo-tag">展示體驗</span>` : "";
 
           card.innerHTML = `
             <div class="post-header">
-              <span class="post-author">${escapeHtml(post.author || "長青運動員")}</span>
+              <span class="post-author">${escapeHtml(post.author || "長青運動員")}${demoBadge}</span>
               <span class="post-time">${formatTimestamp(post.createdAt)}</span>
             </div>
             <p style="font-weight:700; margin-bottom:8px;">${escapeHtml(post.summary || "")}</p>
-            ${badgeHtml}
+            ${renderBadgeBlock(post)}
             <div class="reaction-bar">
-              <button class="react-btn ${myReactions.like ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'like')">
-                👍 真讚 (${reactions.like || 0})
+              <button class="react-btn ${myReactions.like ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'like', this)">
+                👍 真讚 (${Math.max(0, reactions.like || 0)})
               </button>
-              <button class="react-btn ${myReactions.clap ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'clap')">
-                👏 好棒 (${reactions.clap || 0})
+              <button class="react-btn ${myReactions.clap ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'clap', this)">
+                👏 好棒 (${Math.max(0, reactions.clap || 0)})
               </button>
-              <button class="react-btn ${myReactions.heart ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'heart')">
-                ❤️ 加油 (${reactions.heart || 0})
+              <button class="react-btn ${myReactions.heart ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'heart', this)">
+                ❤️ 加油 (${Math.max(0, reactions.heart || 0)})
               </button>
             </div>
           `;
@@ -1041,20 +1545,34 @@
         console.error("Firestore 監聽錯誤：", error);
         const statusEl = document.getElementById("cloudStatus");
         statusEl.className = "cloud-status error";
-        statusEl.textContent = "⚠️ 雲端連線異常，請確認 Firestore 已啟用並設為測試模式";
+        statusEl.textContent =
+          error && error.code === "permission-denied"
+            ? "🔴 雲端權限已過期或遭拒絕，請更新 Firestore 安全性規則"
+            : "🔴 雲端連線異常，請檢查網路狀態或 Firebase 設定";
       }
     );
 
-    async function toggleReaction(postId, type) {
+    async function toggleReaction(postId, type, btnEl) {
+      const lockKey = `${postId}_${type}`;
+      if (pendingReactions.has(lockKey)) return;
+
+      pendingReactions.add(lockKey);
+      if (btnEl) btnEl.disabled = true;
+
       if (!userReactedMap[postId]) {
         userReactedMap[postId] = {};
       }
+
       const alreadyReacted = !!userReactedMap[postId][type];
       const delta = alreadyReacted ? -1 : 1;
 
       userReactedMap[postId][type] = !alreadyReacted;
       localStorage.setItem("usr_reacted_map", JSON.stringify(userReactedMap));
-      if (!alreadyReacted) playSoftBeep();
+
+      if (!alreadyReacted) {
+        initAudioContext();
+        playSoftBeep();
+      }
 
       try {
         const postRef = doc(db, "posts", postId);
@@ -1062,22 +1580,38 @@
           [`reactions.${type}`]: increment(delta)
         });
       } catch (err) {
+        // 雲端寫入失敗時自動回滾本機狀態
+        userReactedMap[postId][type] = alreadyReacted;
+        localStorage.setItem("usr_reacted_map", JSON.stringify(userReactedMap));
         console.error("更新貼圖失敗：", err);
+      } finally {
+        pendingReactions.delete(lockKey);
+        if (btnEl) btnEl.disabled = false;
       }
     }
 
     function escapeHtml(str) {
-      return str
+      return String(str)
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;");
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
     }
 
     /* =========================================
-       9. 頁面切換控制與全域函式綁定
+       9. 頁面切換防呆與本機展示資料重置
        ========================================= */
     function switchTab(tabName) {
+      // 運動進行中切到動態牆時，自動暫停計時與背景語音
+      if (tabName === "social" && isWorkoutActive && !isPaused) {
+        pauseWorkout(true);
+      }
+
+      if (tabName === "exercise") {
+        document.getElementById("socialPausedBanner").classList.add("hidden");
+      }
+
       document.getElementById("tabExercise").classList.toggle("active", tabName === "exercise");
       document.getElementById("tabSocial").classList.toggle("active", tabName === "social");
       document.getElementById("sectionExercise").classList.toggle("active", tabName === "exercise");
@@ -1091,16 +1625,36 @@
       document.getElementById("progressBar").style.width = "0%";
     }
 
-    // 將模組內函式掛載至 window 供 HTML 按鈕呼叫
+    function resetLocalDemoData() {
+      const ok = window.confirm("確定要清除這台裝置上的簽到天數、已按讚紀錄與暱稱嗎？（不會影響雲端已發布的貼文）");
+      if (!ok) return;
+
+      localStorage.removeItem("usr_streak_days");
+      localStorage.removeItem("usr_last_checkin_date");
+      localStorage.removeItem("usr_reacted_map");
+      localStorage.removeItem("usr_display_name");
+
+      userReactedMap = {};
+      document.getElementById("userNameInput").value = "";
+      updateStreakBanner();
+      alert("已重置本機測試紀錄！");
+    }
+
+    // 掛載全域函式供 HTML 按鈕呼叫
     window.switchTab = switchTab;
     window.startWorkout = startWorkout;
     window.toggleAudio = toggleAudio;
     window.repeatVoice = repeatVoice;
-    window.stopWorkout = stopWorkout;
+    window.togglePause = togglePause;
+    window.requestStopWorkout = requestStopWorkout;
+    window.cancelStopWorkout = cancelStopWorkout;
+    window.confirmStopWorkout = confirmStopWorkout;
     window.publishToWall = publishToWall;
+    window.shareBadge = shareBadge;
     window.downloadBadge = downloadBadge;
     window.resetToHome = resetToHome;
     window.toggleReaction = toggleReaction;
+    window.resetLocalDemoData = resetLocalDemoData;
   </script>
 </body>
 </html>
