@@ -120,6 +120,102 @@
       color: var(--text-main);
     }
 
+    /* 獨立聲音設定面板（背景音樂 vs 引導語音） */
+    .audio-panel {
+      background-color: #F8FAFC;
+      border: 2px solid var(--border);
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 16px;
+    }
+
+    .audio-panel-title {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+
+    .audio-toggle-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .audio-toggle-btn {
+      flex: 1;
+      min-width: 155px;
+      padding: 12px 14px;
+      font-size: 1.15rem;
+      font-weight: 800;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 3px solid var(--text-main);
+      transition: all 0.15s ease;
+      text-align: center;
+    }
+
+    .audio-toggle-btn.on {
+      background-color: #DBEAFE;
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .audio-toggle-btn.bgm-on {
+      background-color: #DCFCE7;
+      border-color: var(--success);
+      color: var(--success-dark);
+    }
+
+    .audio-toggle-btn.off {
+      background-color: #E2E8F0;
+      border-color: #64748B;
+      color: #475569;
+    }
+
+    /* 音樂曲目與切歌列 */
+    .bgm-bar {
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 2px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .bgm-track-info {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+      flex: 1;
+      min-width: 180px;
+    }
+
+    .bgm-next-btn {
+      padding: 8px 14px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border: 2px solid var(--text-main);
+      border-radius: 10px;
+      background-color: #FFFFFF;
+      color: var(--text-main);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .bgm-next-btn:hover:not(:disabled) {
+      background-color: #EFF6FF;
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .bgm-next-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
     /* 難度選擇大按鈕 */
     .mode-list {
       display: flex;
@@ -337,7 +433,7 @@
       background-color: #FFFFFF;
     }
 
-    /* 成就徽章顯示區（支援手機長按儲存） */
+    /* 成就徽章顯示區 */
     .canvas-wrapper {
       text-align: center;
       margin: 16px 0;
@@ -440,7 +536,6 @@
       border: 2px solid var(--text-main);
     }
 
-    /* 輕量化純 CSS 數位成就徽章（免存 Base64 至 Firestore） */
     .css-badge-card {
       max-width: 460px;
       margin: 12px auto;
@@ -542,7 +637,7 @@
       font-weight: 700;
     }
 
-    /* 確認結束防誤觸對話框（高對比大按鈕） */
+    /* 確認結束防誤觸對話框 */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -577,7 +672,6 @@
       margin-bottom: 24px;
     }
 
-    /* 頁尾測試重置工具列 */
     footer {
       max-width: 760px;
       margin: 28px auto 0;
@@ -607,6 +701,12 @@
     .hidden {
       display: none !important;
     }
+
+    @media (max-width: 480px) {
+      .card { padding: 18px; }
+      .mode-btn { padding: 16px; }
+      .react-btn { font-size: 1.05rem; padding: 12px 4px; }
+    }
   </style>
 </head>
 <body>
@@ -631,7 +731,20 @@
       <!-- 步驟 A：選擇難度與時長 -->
       <div id="viewSelect" class="card">
         <h2>請選擇今天的運動難度</h2>
-        <p style="color: var(--text-sub);">全程都有大圖示與語音帶領，不用擔心跟不上。</p>
+        <p style="color: var(--text-sub); margin-bottom: 14px;">可先自由設定要聽「引導語音」或「背景音樂」，運動過程中也能隨時切換。</p>
+
+        <!-- 獨立聲音設定面板（首頁預選） -->
+        <div class="audio-panel">
+          <div class="audio-panel-title">🎛️ 聲音偏好設定（可分開開關）</div>
+          <div class="audio-toggle-row">
+            <button class="audio-toggle-btn on" data-voice-toggle onclick="toggleVoice()">🔊 引導語音：開啟</button>
+            <button class="audio-toggle-btn bgm-on" data-bgm-toggle onclick="toggleBgm()">🎵 背景音樂：開啟</button>
+          </div>
+          <div class="bgm-bar">
+            <span class="bgm-track-info" data-bgm-status>🎵 正在載入音樂清單...</span>
+            <button class="bgm-next-btn" data-bgm-next onclick="nextTrack()" disabled>⏭ 換下一首</button>
+          </div>
+        </div>
 
         <div class="mode-list">
           <button class="mode-btn" onclick="startWorkout('easy')">
@@ -660,13 +773,22 @@
         </div>
       </div>
 
-      <!-- 步驟 B：運動引導進行中（動態圖解輪播 + 語音倒數 + 暫停控制） -->
+      <!-- 步驟 B：運動引導進行中（動態圖解輪播 + 獨立雙聲道控制） -->
       <div id="viewActive" class="card hidden">
         <div class="workout-header">
           <span class="step-indicator" id="stepCounter">動作 1 / 3</span>
-          <button class="btn-outline" style="padding: 8px 14px; border-radius: 10px; font-weight: 700; cursor: pointer;" onclick="toggleAudio()">
-            <span id="audioStatusText">🔊 語音開啟中</span>
-          </button>
+        </div>
+
+        <!-- 獨立聲音設定面板（運動中即時控制） -->
+        <div class="audio-panel">
+          <div class="audio-toggle-row">
+            <button class="audio-toggle-btn on" data-voice-toggle onclick="toggleVoice()">🔊 引導語音：開啟</button>
+            <button class="audio-toggle-btn bgm-on" data-bgm-toggle onclick="toggleBgm()">🎵 背景音樂：開啟</button>
+          </div>
+          <div class="bgm-bar">
+            <span class="bgm-track-info" data-bgm-status>🎵 正在載入音樂清單...</span>
+            <button class="bgm-next-btn" data-bgm-next onclick="nextTrack()" disabled>⏭ 換下一首</button>
+          </div>
         </div>
 
         <div id="pausedBanner" class="paused-banner hidden">
@@ -704,7 +826,6 @@
         <div class="complete-note" id="completeStatusText">系統已自動為您記錄簽到天數，並製作專屬成就徽章：</div>
 
         <div class="canvas-wrapper">
-          <!-- Canvas 負責繪圖合成；img 供手機/LINE 瀏覽器長按儲存 -->
           <canvas id="badgeCanvas" width="600" height="400" class="hidden"></canvas>
           <img id="badgePreviewImg" class="badge-preview-img" alt="數位健康成就徽章" />
           <p class="save-hint">💡 若使用手機或 LINE 開啟，可直接長按上方圖片儲存至相簿</p>
@@ -732,9 +853,8 @@
          分頁二：雲端同步零打字社群動態牆
          ========================================= -->
     <section id="sectionSocial" class="section">
-      <!-- 運動中切換至此頁時顯示的返回提示 -->
       <div id="socialPausedBanner" class="resume-workout-banner hidden">
-        <span style="font-weight: 800; color: #78350F;">⏸ 您剛才的運動已自動暫停</span>
+        <span style="font-weight: 800; color: #78350F;">⏸ 您剛才的運動與音樂已自動暫停</span>
         <button class="btn-primary" style="padding: 10px 18px; border: none; border-radius: 10px; color: #fff; font-size: 1.1rem; font-weight: 800; cursor: pointer;" onclick="switchTab('exercise')">
           返回繼續運動
         </button>
@@ -765,6 +885,9 @@
       </div>
     </div>
   </div>
+
+  <!-- 隱藏式 HTML5 背景音樂播放器 -->
+  <audio id="bgmPlayer" preload="none"></audio>
 
   <script type="module">
     /* =========================================
@@ -958,9 +1081,24 @@
     let isPaused = false;
     let wasPausedBeforeModal = false;
 
-    let audioEnabled = true;
+    // 獨立雙聲道偏好（預設皆開啟，並記憶於本機）
+    let voiceEnabled = localStorage.getItem("usr_voice_enabled") !== "false";
+    let bgmEnabled = localStorage.getItem("usr_bgm_enabled") !== "false";
+
     let sharedAudioCtx = null;
     let zhTwVoice = null;
+
+    // 動態背景音樂清單設定
+    const GITHUB_MUSIC_API = "https://api.github.com/repos/Geroge941105/the-elderly-exercise-web/contents/music";
+    const BGM_VOLUME_NORMAL = 0.35;
+    const BGM_VOLUME_DUCKED = 0.10; // 語音引導說話時自動壓低背景音樂
+    const bgmPlayer = document.getElementById("bgmPlayer");
+    bgmPlayer.volume = BGM_VOLUME_NORMAL;
+
+    let bgmPlaylist = [];
+    let currentTrackIdx = 0;
+    let bgmConsecutiveErrors = 0;
+    let bgmLoadedSourceSrc = "";
 
     let latestBadgeDataUrl = "";
     let latestBadgeMeta = { streakDays: 1, routineName: "", dateStr: "", isDemo: false };
@@ -968,7 +1106,6 @@
 
     const pendingReactions = new Set();
 
-    // 取得本地時區日期字串 YYYY-MM-DD（避免 UTC 時差造成跨日誤判）
     function getLocalDateStr(offsetDays = 0) {
       const d = new Date();
       d.setDate(d.getDate() + offsetDays);
@@ -984,7 +1121,6 @@
       const today = getLocalDateStr(0);
       const yesterday = getLocalDateStr(-1);
 
-      // 若最後簽到日不是今天也不是昨天，代表連續天數已中斷
       if (!lastDate || (lastDate !== today && lastDate !== yesterday)) {
         return { days: 0, lastDate };
       }
@@ -1001,10 +1137,223 @@
     updateStreakBanner();
 
     /* =========================================
-       5. 單例 AudioContext & 跨裝置 Web Speech API
+       5. 動態音樂清單載入與無限輪播引擎
+       ========================================= */
+    function formatTitleFromFilename(path) {
+      const base = String(path).split("/").pop() || "背景音樂";
+      return decodeURIComponent(base).replace(/\.[^/.]+$/, "");
+    }
+
+    function normalizeTrackUrl(file) {
+      const trimmed = String(file).trim();
+      if (/^https?:\/\//i.test(trimmed)) return trimmed;
+      return encodeURI(trimmed.startsWith("./") || trimmed.startsWith("/") ? trimmed : `./${trimmed}`);
+    }
+
+    function normalizePlaylistItems(rawList) {
+      if (!Array.isArray(rawList)) return [];
+      return rawList
+        .map((item) => {
+          if (typeof item === "string" && item.trim()) {
+            return {
+              title: formatTitleFromFilename(item),
+              url: normalizeTrackUrl(item)
+            };
+          }
+          if (item && typeof item === "object" && (item.file || item.url)) {
+            const rawPath = item.file || item.url;
+            return {
+              title: (item.title && String(item.title).trim()) || formatTitleFromFilename(rawPath),
+              url: normalizeTrackUrl(rawPath)
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+    }
+
+    async function loadMusicPlaylist() {
+      // 1. 優先讀取 music/playlist.json（最穩定、無 API 次數上限）
+      try {
+        const res = await fetch(`./music/playlist.json?t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          const list = Array.isArray(data) ? data : data.tracks;
+          const parsed = normalizePlaylistItems(list);
+          if (parsed.length > 0) {
+            bgmPlaylist = parsed;
+            updateAudioControlsUI();
+            return;
+          }
+        }
+      } catch (e) {
+        // 找不到或格式無效時自動改試備援方案
+      }
+
+      // 2. 備援：自動掃描 GitHub 儲存庫的 music/ 資料夾內所有音檔
+      try {
+        const res = await fetch(GITHUB_MUSIC_API);
+        if (res.ok) {
+          const files = await res.json();
+          if (Array.isArray(files)) {
+            const audioRegex = /\.(mp3|wav|ogg|m4a)$/i;
+            bgmPlaylist = files
+              .filter((f) => f.type === "file" && audioRegex.test(f.name))
+              .map((f) => ({
+                title: formatTitleFromFilename(f.name),
+                url: `./music/${encodeURIComponent(f.name)}`
+              }));
+          }
+        }
+      } catch (e) {
+        console.warn("無法自動掃描 music/ 資料夾：", e);
+      }
+
+      updateAudioControlsUI();
+    }
+
+    const playlistLoadPromise = loadMusicPlaylist();
+
+    function updateAudioControlsUI() {
+      // 同步更新首頁與運動畫面的所有聲音按鈕
+      document.querySelectorAll("[data-voice-toggle]").forEach((btn) => {
+        btn.textContent = voiceEnabled ? "🔊 引導語音：開啟" : "🔇 引導語音：靜音";
+        btn.classList.toggle("on", voiceEnabled);
+        btn.classList.toggle("off", !voiceEnabled);
+      });
+
+      document.querySelectorAll("[data-bgm-toggle]").forEach((btn) => {
+        btn.textContent = bgmEnabled ? "🎵 背景音樂：開啟" : "🔇 背景音樂：靜音";
+        btn.classList.toggle("bgm-on", bgmEnabled);
+        btn.classList.toggle("off", !bgmEnabled);
+      });
+
+      const hasTracks = bgmPlaylist.length > 0;
+      const currentTrack = hasTracks ? bgmPlaylist[currentTrackIdx] : null;
+
+      let statusMsg = "";
+      if (!hasTracks) {
+        statusMsg = "🎵 尚未偵測到音樂檔（請將 MP3 放入 music/ 資料夾）";
+      } else if (!bgmEnabled) {
+        statusMsg = `🔇 背景音樂已靜音（歌單共 ${bgmPlaylist.length} 首）`;
+      } else if (isWorkoutActive && !isPaused) {
+        statusMsg = `🎶 播放中 (${currentTrackIdx + 1}/${bgmPlaylist.length})：${currentTrack.title}`;
+      } else {
+        statusMsg = `🎵 待播 (${currentTrackIdx + 1}/${bgmPlaylist.length})：${currentTrack.title}`;
+      }
+
+      document.querySelectorAll("[data-bgm-status]").forEach((el) => {
+        el.textContent = statusMsg;
+      });
+
+      document.querySelectorAll("[data-bgm-next]").forEach((btn) => {
+        btn.disabled = bgmPlaylist.length <= 1;
+      });
+    }
+
+    async function playBgmCurrentTrack(forceReload = false) {
+      if (!bgmEnabled) return;
+      await playlistLoadPromise;
+      if (bgmPlaylist.length === 0) {
+        updateAudioControlsUI();
+        return;
+      }
+
+      const track = bgmPlaylist[currentTrackIdx];
+      if (forceReload || bgmLoadedSourceSrc !== track.url) {
+        bgmPlayer.src = track.url;
+        bgmLoadedSourceSrc = track.url;
+      }
+
+      try {
+        await bgmPlayer.play();
+        bgmConsecutiveErrors = 0;
+      } catch (err) {
+        console.warn("背景音樂播放受限或載入中：", err);
+      }
+      updateAudioControlsUI();
+    }
+
+    function pauseBgm() {
+      if (!bgmPlayer.paused) {
+        bgmPlayer.pause();
+      }
+      updateAudioControlsUI();
+    }
+
+    function nextTrack() {
+      if (bgmPlaylist.length === 0) return;
+      currentTrackIdx = (currentTrackIdx + 1) % bgmPlaylist.length;
+      bgmConsecutiveErrors = 0;
+
+      if (isWorkoutActive && !isPaused && bgmEnabled) {
+        playBgmCurrentTrack(true);
+      } else {
+        // 尚未開始運動時，僅切換待播曲目
+        bgmLoadedSourceSrc = "";
+        updateAudioControlsUI();
+      }
+    }
+
+    // 播完一首自動接續下一首，無限循環
+    bgmPlayer.addEventListener("ended", () => {
+      if (!bgmEnabled || !isWorkoutActive || isPaused || bgmPlaylist.length === 0) return;
+      if (bgmPlaylist.length === 1) {
+        bgmPlayer.currentTime = 0;
+        bgmPlayer.play().catch(() => {});
+      } else {
+        currentTrackIdx = (currentTrackIdx + 1) % bgmPlaylist.length;
+        playBgmCurrentTrack(true);
+      }
+    });
+
+    // 若單一音檔讀取失敗，自動嘗試下一首（避免無限跳錯）
+    bgmPlayer.addEventListener("error", () => {
+      if (bgmPlaylist.length === 0 || !isWorkoutActive || !bgmEnabled) return;
+      bgmConsecutiveErrors++;
+      if (bgmConsecutiveErrors < bgmPlaylist.length) {
+        currentTrackIdx = (currentTrackIdx + 1) % bgmPlaylist.length;
+        playBgmCurrentTrack(true);
+      } else {
+        document.querySelectorAll("[data-bgm-status]").forEach((el) => {
+          el.textContent = "⚠️ 音樂檔無法載入，請確認 music/ 路徑與檔名";
+        });
+      }
+    });
+
+    function toggleVoice() {
+      voiceEnabled = !voiceEnabled;
+      localStorage.setItem("usr_voice_enabled", String(voiceEnabled));
+      if (voiceEnabled) {
+        initAudioContext();
+      } else {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      }
+      updateAudioControlsUI();
+    }
+
+    function toggleBgm() {
+      bgmEnabled = !bgmEnabled;
+      localStorage.setItem("usr_bgm_enabled", String(bgmEnabled));
+      if (bgmEnabled) {
+        if (isWorkoutActive && !isPaused) {
+          playBgmCurrentTrack(false);
+        }
+      } else {
+        pauseBgm();
+      }
+      updateAudioControlsUI();
+    }
+
+    // 初始同步按鈕外觀
+    updateAudioControlsUI();
+
+    /* =========================================
+       6. 單例 AudioContext & 跨裝置 Web Speech API（含語音閃避混音）
        ========================================= */
     function initAudioContext() {
-      if (!audioEnabled) return null;
+      if (!voiceEnabled) return null;
       try {
         if (!sharedAudioCtx) {
           const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -1027,9 +1376,9 @@
       if (!voices || voices.length === 0) return;
 
       zhTwVoice =
-        voices.find(v => v.lang === "zh-TW") ||
-        voices.find(v => v.lang.toLowerCase().includes("zh-tw")) ||
-        voices.find(v => v.lang.toLowerCase().startsWith("zh")) ||
+        voices.find((v) => v.lang === "zh-TW") ||
+        voices.find((v) => v.lang.toLowerCase().includes("zh-tw")) ||
+        voices.find((v) => v.lang.toLowerCase().startsWith("zh")) ||
         null;
     }
 
@@ -1038,9 +1387,8 @@
       window.speechSynthesis.onvoiceschanged = loadZhTwVoice;
     }
 
-    // 在使用者點擊按鈕當下預熱語音引擎（解決 iOS Safari 無法在 setInterval 播音問題）
     function prewarmSpeech() {
-      if (!audioEnabled || !("speechSynthesis" in window)) return;
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
       try {
         window.speechSynthesis.cancel();
         const silent = new SpeechSynthesisUtterance("");
@@ -1050,7 +1398,7 @@
     }
 
     function speakText(text) {
-      if (!audioEnabled || !("speechSynthesis" in window)) return;
+      if (!voiceEnabled || !("speechSynthesis" in window)) return;
       try {
         window.speechSynthesis.cancel();
         const utterance = new SpeechSynthesisUtterance(text);
@@ -1058,12 +1406,26 @@
         if (zhTwVoice) utterance.voice = zhTwVoice;
         utterance.rate = 0.92;
         utterance.pitch = 1.05;
+
+        // 語音閃避（Audio Ducking）：引導說話時自動壓低背景音樂
+        utterance.onstart = () => {
+          if (bgmEnabled) bgmPlayer.volume = BGM_VOLUME_DUCKED;
+        };
+        const restoreVolume = () => {
+          bgmPlayer.volume = BGM_VOLUME_NORMAL;
+        };
+        utterance.onend = restoreVolume;
+        utterance.onerror = restoreVolume;
+
         window.speechSynthesis.speak(utterance);
-      } catch (e) {}
+      } catch (e) {
+        bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      }
     }
 
     function playSoftBeep() {
-      if (!audioEnabled) return;
+      // 若使用者關閉「引導語音」，同步靜音節拍提示音，只保留純音樂或全靜音
+      if (!voiceEnabled) return;
       const ctx = initAudioContext();
       if (!ctx) return;
       try {
@@ -1080,25 +1442,19 @@
       } catch (e) {}
     }
 
-    function toggleAudio() {
-      audioEnabled = !audioEnabled;
-      document.getElementById("audioStatusText").textContent = audioEnabled ? "🔊 語音開啟中" : "🔇 語音已靜音";
-      if (audioEnabled) {
-        initAudioContext();
-      } else if ("speechSynthesis" in window) {
-        window.speechSynthesis.cancel();
-      }
-    }
-
     function repeatVoice() {
       if (!currentRoutine || !isWorkoutActive) return;
+      if (!voiceEnabled) {
+        alert("目前「引導語音」已靜音，請先點上方按鈕開啟語音喔！");
+        return;
+      }
       initAudioContext();
       const step = currentRoutine.steps[currentStepIdx];
       speakText(`${step.title}。${step.instruction}`);
     }
 
     /* =========================================
-       6. 運動計時狀態機、暫停控制與防誤觸確認
+       7. 運動計時狀態機、暫停控制與防誤觸確認
        ========================================= */
     function clearAllTimers() {
       if (timerInterval) {
@@ -1112,7 +1468,6 @@
     }
 
     function startWorkout(modeKey) {
-      // 同步使用者點擊事件中初始化音效與語音
       initAudioContext();
       prewarmSpeech();
 
@@ -1135,6 +1490,13 @@
       document.getElementById("viewSelect").classList.add("hidden");
       document.getElementById("viewComplete").classList.add("hidden");
       document.getElementById("viewActive").classList.remove("hidden");
+
+      // 在使用者點擊按鈕當下啟動背景音樂（符合手機瀏覽器播放限制）
+      if (bgmEnabled) {
+        playBgmCurrentTrack(false);
+      } else {
+        updateAudioControlsUI();
+      }
 
       loadStep(0);
 
@@ -1224,6 +1586,8 @@
       if (!isWorkoutActive || isPaused) return;
       isPaused = true;
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      pauseBgm();
       updatePauseUI();
       if (fromTabSwitch) {
         document.getElementById("socialPausedBanner").classList.remove("hidden");
@@ -1236,6 +1600,9 @@
       isPaused = false;
       updatePauseUI();
       document.getElementById("socialPausedBanner").classList.add("hidden");
+      if (bgmEnabled) {
+        playBgmCurrentTrack(false);
+      }
       speakText("繼續運動，加油！");
     }
 
@@ -1248,7 +1615,6 @@
       }
     }
 
-    // 防誤觸：點擊結束運動時先暫停並開啟大按鈕確認框
     function requestStopWorkout() {
       if (!isWorkoutActive) return;
       wasPausedBeforeModal = isPaused;
@@ -1269,6 +1635,8 @@
       isWorkoutActive = false;
       isPaused = false;
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+      bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      pauseBgm();
       document.getElementById("socialPausedBanner").classList.add("hidden");
       resetToHome();
     }
@@ -1277,6 +1645,8 @@
       clearAllTimers();
       isWorkoutActive = false;
       isPaused = false;
+      bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      pauseBgm();
       document.getElementById("socialPausedBanner").classList.add("hidden");
 
       const todayStr = getLocalDateStr(0);
@@ -1287,7 +1657,6 @@
       let badgeStreakDays = 1;
 
       if (currentModeKey === "demo") {
-        // 展示模式不污染本機真實連續天數
         const { days } = readStoredStreak();
         badgeStreakDays = Math.max(days, 1);
         statusEl.textContent = "展示體驗模式完成！此模式僅供流程展示，不會更動您本機的真實每日簽到天數。";
@@ -1328,7 +1697,7 @@
     }
 
     /* =========================================
-       7. HTML5 Canvas 繪製成就徽章 + 手機 Web Share 分享
+       8. HTML5 Canvas 繪製成就徽章 + 手機 Web Share 分享
        ========================================= */
     function drawAchievementBadge({ streakDays, routineName, dateStr }) {
       const canvas = document.getElementById("badgeCanvas");
@@ -1368,7 +1737,6 @@
       ctx.font = "bold 20px sans-serif";
       ctx.fillText(`${routineName} ｜ ${dateStr}`, canvas.width / 2, 355);
 
-      // 產生輕量化 JPEG 並顯示於 img 標籤，讓手機／LINE 瀏覽器可長按儲存
       latestBadgeDataUrl = canvas.toDataURL("image/jpeg", 0.8);
       document.getElementById("badgePreviewImg").src = latestBadgeDataUrl;
     }
@@ -1379,7 +1747,7 @@
 
       if (navigator.share && canvas.toBlob) {
         try {
-          const blob = await new Promise(resolve => canvas.toBlob(resolve, "image/png"));
+          const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/png"));
           if (blob) {
             const file = new File([blob], fileName, { type: "image/png" });
             if (navigator.canShare && navigator.canShare({ files: [file] })) {
@@ -1392,11 +1760,9 @@
             }
           }
         } catch (err) {
-          if (err && err.name === "AbortError") return; // 使用者主動取消分享
+          if (err && err.name === "AbortError") return;
         }
       }
-
-      // 裝置不支援 Web Share API（例如桌機瀏覽器）時，自動改為下載圖片
       downloadBadge();
     }
 
@@ -1409,7 +1775,7 @@
     }
 
     /* =========================================
-       8. Firestore 雲端動態牆（輕量結構化資料，不存 Base64）
+       9. Firestore 雲端動態牆（輕量結構化資料）
        ========================================= */
     async function publishToWall() {
       if (badgePublished) {
@@ -1428,7 +1794,6 @@
       }
 
       try {
-        // 僅寫入輕量欄位，不儲存肥大 Base64 圖片
         await addDoc(postsCollection, {
           author: authorName,
           routineName: latestBadgeMeta.routineName,
@@ -1466,12 +1831,10 @@
     }
 
     function renderBadgeBlock(post) {
-      // 向下相容舊資料：若有合法 data:image Base64 則直接顯示
       if (typeof post.badgeImg === "string" && post.badgeImg.startsWith("data:image/")) {
         return `<img class="post-badge-img" src="${post.badgeImg}" alt="數位成就徽章" />`;
       }
 
-      // 新版輕量資料：以純 HTML/CSS 繪製高對比向量徽章
       const days = Number.isFinite(Number(post.streakDays)) ? Number(post.streakDays) : 1;
       const routine = escapeHtml(post.routineName || "每日健康運動");
       const dateStr = escapeHtml(post.dateStr || formatTimestamp(post.createdAt));
@@ -1580,7 +1943,6 @@
           [`reactions.${type}`]: increment(delta)
         });
       } catch (err) {
-        // 雲端寫入失敗時自動回滾本機狀態
         userReactedMap[postId][type] = alreadyReacted;
         localStorage.setItem("usr_reacted_map", JSON.stringify(userReactedMap));
         console.error("更新貼圖失敗：", err);
@@ -1600,10 +1962,9 @@
     }
 
     /* =========================================
-       9. 頁面切換防呆與本機展示資料重置
+       10. 頁面切換防呆與本機展示資料重置
        ========================================= */
     function switchTab(tabName) {
-      // 運動進行中切到動態牆時，自動暫停計時與背景語音
       if (tabName === "social" && isWorkoutActive && !isPaused) {
         pauseWorkout(true);
       }
@@ -1623,6 +1984,7 @@
       document.getElementById("viewActive").classList.add("hidden");
       document.getElementById("viewComplete").classList.add("hidden");
       document.getElementById("progressBar").style.width = "0%";
+      updateAudioControlsUI();
     }
 
     function resetLocalDemoData() {
@@ -1643,7 +2005,9 @@
     // 掛載全域函式供 HTML 按鈕呼叫
     window.switchTab = switchTab;
     window.startWorkout = startWorkout;
-    window.toggleAudio = toggleAudio;
+    window.toggleVoice = toggleVoice;
+    window.toggleBgm = toggleBgm;
+    window.nextTrack = nextTrack;
     window.repeatVoice = repeatVoice;
     window.togglePause = togglePause;
     window.requestStopWorkout = requestStopWorkout;
