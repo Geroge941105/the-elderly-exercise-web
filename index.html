@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0F172A" />
+  <meta name="description" content="數位社會處方｜專為高齡者設計的無障礙極簡運動引導與零打字親友社群平台" />
+  <link rel="manifest" href="./manifest.json" />
   <title>數位社會處方｜長青友善極簡運動平台</title>
   <style>
     /* =========================================
        1. 無障礙極簡設計系統 (Accessible Minimalist UI)
-       高對比配色、特大字體、零視覺雜訊
        ========================================= */
     :root {
       --bg-page: #F1F5F9;
@@ -26,6 +28,14 @@
       --radius: 16px;
     }
 
+    html {
+      font-size: 16px;
+    }
+
+    html.large-font {
+      font-size: 19px;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -36,22 +46,54 @@
     body {
       background-color: var(--bg-page);
       color: var(--text-main);
-      font-size: 20px;
+      font-size: 1.2rem;
       line-height: 1.6;
       padding-bottom: 48px;
+    }
+
+    button {
+      transition: transform 0.08s ease, background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    button:focus-visible, input:focus-visible, summary:focus-visible {
+      outline: 4px solid #F59E0B;
+      outline-offset: 2px;
+    }
+
+    /* 離線提示條 */
+    .offline-banner {
+      background-color: #991B1B;
+      color: #FFFFFF;
+      text-align: center;
+      padding: 10px 16px;
+      font-size: 1rem;
+      font-weight: 800;
     }
 
     header {
       background-color: var(--text-main);
       color: #FFFFFF;
-      padding: 20px 16px;
+      padding: 18px 16px 16px;
       text-align: center;
     }
 
     header h1 {
-      font-size: 1.8rem;
+      font-size: 1.7rem;
       letter-spacing: 1px;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
+    }
+
+    .header-meta-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
     }
 
     .streak-banner {
@@ -59,31 +101,63 @@
       background-color: #FEF3C7;
       color: #78350F;
       font-weight: 800;
-      padding: 6px 18px;
+      padding: 5px 16px;
       border-radius: 999px;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
+    }
+
+    .minutes-banner {
+      display: inline-block;
+      background-color: #DBEAFE;
+      color: #1E3A8A;
+      font-weight: 800;
+      padding: 5px 16px;
+      border-radius: 999px;
+      font-size: 1.05rem;
+    }
+
+    /* 頁首無障礙快選工具列（字體大小／語速） */
+    .a11y-toolbar {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 6px;
+    }
+
+    .a11y-pill-btn {
+      background-color: rgba(255, 255, 255, 0.14);
+      color: #FFFFFF;
+      border: 2px solid rgba(255, 255, 255, 0.45);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .a11y-pill-btn:hover {
+      background-color: rgba(255, 255, 255, 0.26);
     }
 
     nav {
       display: flex;
-      max-width: 760px;
-      margin: 20px auto 0;
+      max-width: 820px;
+      margin: 18px auto 0;
       padding: 0 16px;
       gap: 12px;
     }
 
     .nav-btn {
       flex: 1;
-      padding: 18px 12px;
-      font-size: 1.35rem;
+      padding: 16px 12px;
+      font-size: 1.25rem;
       font-weight: 800;
       border: 3px solid var(--primary);
       border-radius: var(--radius);
       background-color: #FFFFFF;
       color: var(--primary);
       cursor: pointer;
-      transition: all 0.15s ease;
     }
 
     .nav-btn.active {
@@ -92,35 +166,110 @@
     }
 
     main {
-      max-width: 760px;
-      margin: 20px auto;
+      max-width: 820px;
+      margin: 18px auto;
       padding: 0 16px;
+      transition: max-width 0.2s ease;
     }
 
-    .section {
-      display: none;
+    main.workout-wide {
+      max-width: 1060px;
     }
 
-    .section.active {
-      display: block;
-    }
+    .section { display: none; }
+    .section.active { display: block; }
 
     .card {
       background-color: var(--bg-card);
       border: 2px solid var(--border);
       border-radius: var(--radius);
-      padding: 24px;
-      margin-bottom: 20px;
+      padding: 22px;
+      margin-bottom: 18px;
       box-shadow: 0 4px 10px rgba(15, 23, 42, 0.05);
     }
 
     h2 {
-      font-size: 1.6rem;
-      margin-bottom: 12px;
+      font-size: 1.5rem;
+      margin-bottom: 10px;
       color: var(--text-main);
     }
 
-    /* 獨立聲音設定面板（背景音樂 vs 引導語音） */
+    /* 本週簽到日曆 */
+    .weekly-card {
+      background-color: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .weekly-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+      font-size: 1.05rem;
+      font-weight: 800;
+    }
+
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+
+    .week-day {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-sub);
+    }
+
+    .week-dot {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background-color: #F8FAFC;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 900;
+      color: #94A3B8;
+    }
+
+    .week-day.today .week-dot {
+      border-color: var(--primary);
+      border-width: 3px;
+      color: var(--primary);
+    }
+
+    .week-day.done .week-dot {
+      background-color: var(--success);
+      border-color: var(--success-dark);
+      color: #FFFFFF;
+    }
+
+    /* 安全提醒卡 */
+    .safety-box {
+      background-color: #FEF3C7;
+      border: 2px solid #F59E0B;
+      border-radius: 12px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #78350F;
+    }
+
+    /* 獨立聲音設定面板 + 音量滑桿（長輩大觸控區） */
     .audio-panel {
       background-color: #F8FAFC;
       border: 2px solid var(--border);
@@ -129,30 +278,61 @@
       margin-bottom: 16px;
     }
 
-    .audio-panel-title {
-      font-size: 1.05rem;
-      font-weight: 800;
-      color: var(--text-sub);
+    .audio-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-bottom: 10px;
     }
 
-    .audio-toggle-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .audio-panel-title {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text-sub);
+    }
+
+    .voice-mode-btn {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      border-radius: 10px;
+      border: 2px solid var(--primary);
+      background-color: #FFFFFF;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .audio-channels {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .audio-channels.two-col {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .channel-box {
+      background-color: #FFFFFF;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
     }
 
     .audio-toggle-btn {
-      flex: 1;
-      min-width: 155px;
-      padding: 12px 14px;
-      font-size: 1.15rem;
+      width: 100%;
+      padding: 10px 12px;
+      font-size: 1.05rem;
       font-weight: 800;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       border: 3px solid var(--text-main);
-      transition: all 0.15s ease;
       text-align: center;
+      margin-bottom: 10px;
     }
 
     .audio-toggle-btn.on {
@@ -173,7 +353,77 @@
       color: #475569;
     }
 
-    /* 音樂曲目與切歌列 */
+    .vol-control-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .vol-step-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 2px solid var(--text-main);
+      background-color: #F8FAFC;
+      color: var(--text-main);
+      font-size: 1.35rem;
+      font-weight: 900;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .vol-step-btn:hover {
+      background-color: #DBEAFE;
+    }
+
+    .vol-slider {
+      flex: 1;
+      height: 14px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #CBD5E1;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .vol-slider::-moz-range-thumb {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--primary);
+      border: 3px solid #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+    }
+
+    .vol-slider.bgm-slider::-webkit-slider-thumb { background: var(--success); }
+    .vol-slider.bgm-slider::-moz-range-thumb { background: var(--success); }
+
+    .vol-pct {
+      min-width: 48px;
+      text-align: right;
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--text-main);
+      font-variant-numeric: tabular-nums;
+    }
+
     .bgm-bar {
       margin-top: 10px;
       padding-top: 10px;
@@ -181,21 +431,21 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .bgm-track-info {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-main);
       flex: 1;
-      min-width: 180px;
+      min-width: 160px;
     }
 
     .bgm-next-btn {
       padding: 8px 14px;
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 800;
       border: 2px solid var(--text-main);
       border-radius: 10px;
@@ -205,23 +455,17 @@
       white-space: nowrap;
     }
 
-    .bgm-next-btn:hover:not(:disabled) {
-      background-color: #EFF6FF;
-      border-color: var(--primary);
-      color: var(--primary);
-    }
-
     .bgm-next-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
     }
 
-    /* 難度選擇大按鈕 */
+    /* 難度選擇按鈕 */
     .mode-list {
       display: flex;
       flex-direction: column;
-      gap: 16px;
-      margin-top: 16px;
+      gap: 14px;
+      margin-top: 14px;
     }
 
     .mode-btn {
@@ -229,7 +473,7 @@
       justify-content: space-between;
       align-items: center;
       width: 100%;
-      padding: 22px 24px;
+      padding: 20px 22px;
       border: 3px solid var(--text-main);
       border-radius: var(--radius);
       background-color: #FFFFFF;
@@ -238,19 +482,19 @@
       cursor: pointer;
     }
 
-    .mode-btn:hover, .mode-btn:focus {
+    .mode-btn:hover {
       background-color: #EFF6FF;
       border-color: var(--primary);
     }
 
     .mode-title {
-      font-size: 1.45rem;
+      font-size: 1.35rem;
       font-weight: 800;
       display: block;
     }
 
     .mode-desc {
-      font-size: 1.1rem;
+      font-size: 1rem;
       color: var(--text-sub);
     }
 
@@ -258,18 +502,76 @@
       background-color: var(--primary);
       color: #FFFFFF;
       font-weight: 800;
-      padding: 8px 16px;
+      padding: 8px 14px;
       border-radius: 12px;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       white-space: nowrap;
       margin-left: 12px;
     }
 
-    .mode-badge.demo {
-      background-color: var(--accent);
+    .mode-badge.demo { background-color: var(--accent); }
+
+    /* 跨裝置同步折疊卡（不打擾極簡主畫面） */
+    details.sync-details {
+      margin-top: 16px;
+      background-color: #F8FAFC;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 14px;
     }
 
-    /* 運動進行中畫面 */
+    details.sync-details summary {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--primary-dark);
+      cursor: pointer;
+    }
+
+    .sync-body {
+      margin-top: 12px;
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+
+    .sync-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .sync-row input {
+      flex: 1;
+      min-width: 160px;
+      padding: 10px 12px;
+      font-size: 1.05rem;
+      border: 2px solid var(--text-main);
+      border-radius: 10px;
+    }
+
+    .sync-status-msg {
+      margin-top: 8px;
+      font-weight: 700;
+      color: var(--success-dark);
+    }
+
+    /* =========================================
+       運動中畫面：橫向平板／電腦雙欄一屏免捲動
+       ========================================= */
+    .workout-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (min-width: 768px) {
+      .workout-layout {
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 22px;
+      }
+    }
+
     .workout-header {
       display: flex;
       justify-content: space-between;
@@ -280,12 +582,31 @@
     }
 
     .step-indicator {
-      font-size: 1.2rem;
-      font-weight: 700;
+      font-size: 1.05rem;
+      font-weight: 800;
       color: var(--primary);
       background: #DBEAFE;
       padding: 6px 14px;
       border-radius: 10px;
+    }
+
+    .step-indicator.phase-prep {
+      color: #92400E;
+      background-color: #FEF3C7;
+    }
+
+    .step-indicator.phase-rest {
+      color: #166534;
+      background-color: #DCFCE7;
+    }
+
+    .wakelock-pill {
+      font-size: 0.85rem;
+      font-weight: 800;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background-color: #DCFCE7;
+      color: #166534;
     }
 
     .paused-banner {
@@ -293,91 +614,131 @@
       color: #92400E;
       border: 2px solid #F59E0B;
       border-radius: 12px;
-      padding: 12px 16px;
+      padding: 10px 14px;
       text-align: center;
-      font-size: 1.25rem;
+      font-size: 1.1rem;
       font-weight: 800;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     .timer-display {
-      font-size: 3.5rem;
+      font-size: 3.4rem;
       font-weight: 900;
       text-align: center;
       color: var(--primary);
       font-variant-numeric: tabular-nums;
-      margin: 8px 0;
+      line-height: 1.1;
+      margin: 6px 0 10px;
     }
 
-    .timer-display.paused {
-      color: var(--accent);
-    }
+    .timer-display.paused { color: var(--accent); }
+    .timer-display.phase-prep { color: var(--accent); }
+    .timer-display.phase-rest { color: var(--success); }
 
     .progress-track {
       width: 100%;
-      height: 18px;
+      height: 16px;
       background-color: #E2E8F0;
       border-radius: 999px;
       overflow: hidden;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
     }
 
     .progress-fill {
       height: 100%;
       width: 0%;
       background-color: var(--success);
-      transition: width 0.4s linear;
+      transition: width 0.3s linear;
     }
 
     .carousel-box {
       background-color: #F8FAFC;
       border: 3px solid var(--text-main);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 16px;
       text-align: center;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+    }
+
+    .pose-top-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
     }
 
     .pose-label {
       display: inline-block;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      padding: 4px 16px;
+      padding: 4px 14px;
       border-radius: 8px;
       background-color: var(--text-main);
       color: #FFFFFF;
-      margin-bottom: 10px;
+    }
+
+    /* 呼吸引導光環（與 2 秒節奏完全同步） */
+    .breath-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 14px;
+      border-radius: 999px;
+      font-size: 1rem;
+      font-weight: 800;
+      border: 2px solid var(--primary);
+      background-color: #EFF6FF;
+      color: var(--primary-dark);
+    }
+
+    .breath-ring {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      transition: transform 1.8s ease-in-out, background-color 0.4s ease;
+    }
+
+    .breath-pill.inhale .breath-ring {
+      transform: scale(1.35);
+      background-color: var(--primary);
+    }
+
+    .breath-pill.exhale .breath-ring {
+      transform: scale(0.75);
+      background-color: var(--success);
     }
 
     .svg-stage {
-      width: 220px;
-      height: 220px;
+      width: 230px;
+      height: 230px;
       margin: 0 auto;
     }
 
     .instruction-text {
-      font-size: 1.35rem;
+      font-size: 1.2rem;
       font-weight: 700;
       text-align: center;
       color: var(--text-main);
-      margin-bottom: 20px;
       background: #FEF9C3;
-      padding: 14px;
+      padding: 12px 14px;
       border-radius: 12px;
       border: 2px solid #FDE047;
     }
 
     .action-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
     .btn-large {
       flex: 1;
-      min-width: 160px;
-      padding: 18px 20px;
-      font-size: 1.3rem;
+      min-width: 140px;
+      padding: 15px 16px;
+      font-size: 1.15rem;
       font-weight: 800;
       border: none;
       border-radius: var(--radius);
@@ -404,40 +765,10 @@
       color: var(--text-main);
       border: 3px solid var(--text-main);
     }
-    .btn-outline:hover {
-      background-color: #F1F5F9;
-    }
+    .btn-outline:hover { background-color: #F1F5F9; }
 
-    /* 選填稱呼輸入框 */
-    .name-input-group {
-      margin: 16px 0;
-      background-color: #F8FAFC;
-      padding: 14px 16px;
-      border-radius: 12px;
-      border: 2px solid var(--border);
-    }
-
-    .name-input-group label {
-      display: block;
-      font-size: 1.15rem;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .name-input-group input {
-      width: 100%;
-      padding: 12px 14px;
-      font-size: 1.25rem;
-      border: 2px solid var(--text-main);
-      border-radius: 10px;
-      background-color: #FFFFFF;
-    }
-
-    /* 成就徽章顯示區 */
-    .canvas-wrapper {
-      text-align: center;
-      margin: 16px 0;
-    }
+    /* 完成畫面與一鍵稱呼快選 */
+    .canvas-wrapper { text-align: center; margin: 14px 0; }
 
     .badge-preview-img {
       width: 100%;
@@ -450,7 +781,7 @@
     }
 
     .save-hint {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-sub);
       margin-top: 8px;
       text-align: center;
@@ -461,17 +792,64 @@
       border: 2px solid #93C5FD;
       color: var(--primary-dark);
       border-radius: 12px;
-      padding: 12px 16px;
-      font-size: 1.15rem;
+      padding: 12px 14px;
+      font-size: 1.05rem;
       font-weight: 700;
       text-align: center;
       margin: 12px 0;
     }
 
-    /* 雲端連線狀態標籤 */
+    .name-input-group {
+      margin: 14px 0;
+      background-color: #F8FAFC;
+      padding: 14px 16px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+    }
+
+    .name-input-group label {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .preset-name-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .preset-chip {
+      padding: 8px 14px;
+      font-size: 1rem;
+      font-weight: 800;
+      border-radius: 999px;
+      border: 2px solid var(--primary);
+      background-color: #FFFFFF;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .preset-chip.selected, .preset-chip:hover {
+      background-color: var(--primary);
+      color: #FFFFFF;
+    }
+
+    .name-input-group input {
+      width: 100%;
+      padding: 12px 14px;
+      font-size: 1.15rem;
+      border: 2px solid var(--text-main);
+      border-radius: 10px;
+      background-color: #FFFFFF;
+    }
+
+    /* 雲端動態牆與篩選列 */
     .cloud-status {
       display: inline-block;
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       padding: 6px 12px;
       border-radius: 8px;
@@ -485,46 +863,88 @@
       color: #991B1B;
     }
 
-    /* 動態牆頂部返回運動橫幅 */
+    .wall-filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .filter-btn {
+      flex: 1;
+      min-width: 100px;
+      padding: 10px 12px;
+      font-size: 1rem;
+      font-weight: 800;
+      border: 2px solid var(--primary);
+      border-radius: 12px;
+      background-color: #FFFFFF;
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background-color: var(--primary);
+      color: #FFFFFF;
+    }
+
     .resume-workout-banner {
       background-color: #FEF3C7;
       border: 3px solid var(--accent);
       border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 18px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
 
-    /* 零打字社群動態牆 */
     .post-card {
       background-color: #FFFFFF;
       border: 2px solid var(--border);
       border-radius: var(--radius);
-      padding: 20px;
-      margin-bottom: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
     }
 
     .post-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
       border-bottom: 2px solid #F1F5F9;
       padding-bottom: 10px;
     }
 
     .post-author {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 800;
     }
 
+    .post-header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .post-time {
-      font-size: 1rem;
+      font-size: 0.95rem;
       color: var(--text-sub);
+    }
+
+    .read-aloud-btn {
+      padding: 6px 12px;
+      font-size: 0.95rem;
+      font-weight: 800;
+      border: 2px solid var(--primary);
+      border-radius: 10px;
+      background-color: #EFF6FF;
+      color: var(--primary-dark);
+      cursor: pointer;
     }
 
     .post-badge-img {
@@ -536,6 +956,7 @@
       border: 2px solid var(--text-main);
     }
 
+    /* 三階分級純 CSS 成就徽章 */
     .css-badge-card {
       max-width: 460px;
       margin: 12px auto;
@@ -547,54 +968,74 @@
     }
 
     .css-badge-top {
-      background-color: var(--primary);
       color: #FFFFFF;
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 800;
       padding: 10px 12px;
-      letter-spacing: 0.5px;
     }
 
-    .css-badge-body {
-      padding: 20px 16px;
+    .css-badge-body { padding: 18px 14px; }
+
+    .css-badge-tier {
+      display: inline-block;
+      font-size: 0.95rem;
+      font-weight: 800;
+      padding: 3px 12px;
+      border-radius: 999px;
+      margin-bottom: 10px;
     }
 
     .css-badge-circle {
-      width: 124px;
-      height: 124px;
-      margin: 0 auto 14px;
+      width: 118px;
+      height: 118px;
+      margin: 0 auto 12px;
       border-radius: 50%;
-      background-color: #FEF3C7;
-      border: 5px solid var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.3rem;
+      font-size: 2.1rem;
       font-weight: 900;
-      color: #78350F;
     }
 
     .css-badge-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--text-main);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .css-badge-meta {
-      font-size: 1rem;
+      font-size: 0.95rem;
       font-weight: 700;
       color: var(--text-sub);
     }
+
+    /* 等級 1：活力起步（藍） */
+    .tier-starter { border-color: #1E3A8A; }
+    .tier-starter .css-badge-top { background-color: #1D4ED8; }
+    .tier-starter .css-badge-tier { background-color: #DBEAFE; color: #1E3A8A; }
+    .tier-starter .css-badge-circle { background-color: #EFF6FF; border: 5px solid #1D4ED8; color: #1E3A8A; }
+
+    /* 等級 2：持之以恆（綠） */
+    .tier-steady { border-color: #14532D; }
+    .tier-steady .css-badge-top { background-color: #15803D; }
+    .tier-steady .css-badge-tier { background-color: #DCFCE7; color: #14532D; }
+    .tier-steady .css-badge-circle { background-color: #F0FDF4; border: 5px solid #15803D; color: #14532D; }
+
+    /* 等級 3：健康達人（金） */
+    .tier-master { border-color: #78350F; background-color: #FFFBEB; }
+    .tier-master .css-badge-top { background-color: #B45309; }
+    .tier-master .css-badge-tier { background-color: #FEF3C7; color: #78350F; border: 1px solid #D97706; }
+    .tier-master .css-badge-circle { background-color: #FEF3C7; border: 5px solid #D97706; color: #78350F; }
 
     .demo-tag {
       display: inline-block;
       background-color: #FEF3C7;
       color: #92400E;
       border: 1px solid #F59E0B;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 800;
-      padding: 2px 10px;
+      padding: 2px 8px;
       border-radius: 999px;
       margin-left: 6px;
       vertical-align: middle;
@@ -602,14 +1043,14 @@
 
     .reaction-bar {
       display: flex;
-      gap: 10px;
-      margin-top: 14px;
+      gap: 8px;
+      margin-top: 12px;
     }
 
     .react-btn {
       flex: 1;
-      padding: 14px 8px;
-      font-size: 1.2rem;
+      padding: 12px 6px;
+      font-size: 1.05rem;
       font-weight: 800;
       border: 2px solid var(--border);
       border-radius: 12px;
@@ -618,10 +1059,7 @@
       cursor: pointer;
     }
 
-    .react-btn:disabled {
-      opacity: 0.65;
-      cursor: wait;
-    }
+    .react-btn:disabled { opacity: 0.65; cursor: wait; }
 
     .react-btn.reacted {
       background-color: #DBEAFE;
@@ -631,9 +1069,9 @@
 
     .empty-wall {
       text-align: center;
-      padding: 36px 20px;
+      padding: 32px 18px;
       color: var(--text-sub);
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
     }
 
@@ -655,30 +1093,21 @@
       border-radius: var(--radius);
       max-width: 480px;
       width: 100%;
-      padding: 28px 24px;
+      padding: 26px 22px;
       text-align: center;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
     }
 
-    .modal-box h3 {
-      font-size: 1.65rem;
-      margin-bottom: 12px;
-      color: var(--text-main);
-    }
-
-    .modal-box p {
-      font-size: 1.2rem;
-      color: var(--text-sub);
-      margin-bottom: 24px;
-    }
+    .modal-box h3 { font-size: 1.5rem; margin-bottom: 10px; }
+    .modal-box p { font-size: 1.1rem; color: var(--text-sub); margin-bottom: 22px; }
 
     footer {
-      max-width: 760px;
-      margin: 28px auto 0;
+      max-width: 820px;
+      margin: 24px auto 0;
       padding: 0 16px;
       text-align: center;
       color: var(--text-sub);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
     }
 
     .reset-link-btn {
@@ -688,32 +1117,38 @@
       color: var(--text-sub);
       padding: 8px 16px;
       border-radius: 10px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       cursor: pointer;
     }
 
-    .reset-link-btn:hover {
-      border-color: var(--text-main);
-      color: var(--text-main);
-    }
-
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
     @media (max-width: 480px) {
-      .card { padding: 18px; }
-      .mode-btn { padding: 16px; }
-      .react-btn { font-size: 1.05rem; padding: 12px 4px; }
+      .card { padding: 16px; }
+      .mode-btn { padding: 15px; }
+      .react-btn { font-size: 0.95rem; padding: 10px 4px; }
+      .week-dot { width: 32px; height: 32px; font-size: 0.95rem; }
     }
   </style>
 </head>
 <body>
 
+  <!-- 離線提示橫幅 -->
+  <div id="offlineBanner" class="offline-banner hidden" role="status">
+    📡 目前處於離線模式：仍可正常看圖與聽語音運動，恢復網路後即可同步至動態牆
+  </div>
+
   <header>
     <h1>數位社會處方｜健康動一動</h1>
-    <div class="streak-banner" id="headerStreak">🔥 目前連續運動：0 天</div>
+    <div class="header-meta-row">
+      <div class="streak-banner" id="headerStreak">🔥 連續運動：0 天</div>
+      <div class="minutes-banner" id="headerMinutes">⏱️ 累計運動：0 分鐘</div>
+    </div>
+    <div class="a11y-toolbar">
+      <button class="a11y-pill-btn" id="btnFontToggle" onclick="toggleFontSize()">🔍 字體：標準</button>
+      <button class="a11y-pill-btn" id="btnRateToggle" onclick="toggleSpeechRate()">🗣️ 語速：標準</button>
+    </div>
   </header>
 
   <!-- 雙分頁極簡導覽 -->
@@ -722,124 +1157,210 @@
     <button class="nav-btn" id="tabSocial" onclick="switchTab('social')">2. 親友動態牆</button>
   </nav>
 
-  <main>
+  <main id="mainContainer">
     <!-- =========================================
          分頁一：運動引導與簽到模組
          ========================================= -->
     <section id="sectionExercise" class="section active">
 
-      <!-- 步驟 A：選擇難度與時長 -->
-      <div id="viewSelect" class="card">
-        <h2>請選擇今天的運動難度</h2>
-        <p style="color: var(--text-sub); margin-bottom: 14px;">可先自由設定要聽「引導語音」或「背景音樂」，運動過程中也能隨時切換。</p>
-
-        <!-- 獨立聲音設定面板（首頁預選） -->
-        <div class="audio-panel">
-          <div class="audio-panel-title">🎛️ 聲音偏好設定（可分開開關）</div>
-          <div class="audio-toggle-row">
-            <button class="audio-toggle-btn on" data-voice-toggle onclick="toggleVoice()">🔊 引導語音：開啟</button>
-            <button class="audio-toggle-btn bgm-on" data-bgm-toggle onclick="toggleBgm()">🎵 背景音樂：開啟</button>
+      <!-- 步驟 A：選擇難度與本週紀錄 -->
+      <div id="viewSelect">
+        <!-- 本週運動日曆 -->
+        <div class="weekly-card">
+          <div class="weekly-header">
+            <span>📅 本週運動紀錄（一～日）</span>
+            <span id="weeklyCountText" style="color: var(--success);">本週已完成 0 天</span>
           </div>
-          <div class="bgm-bar">
-            <span class="bgm-track-info" data-bgm-status>🎵 正在載入音樂清單...</span>
-            <button class="bgm-next-btn" data-bgm-next onclick="nextTrack()" disabled>⏭ 換下一首</button>
-          </div>
+          <div class="week-grid" id="weekGrid"></div>
         </div>
 
-        <div class="mode-list">
-          <button class="mode-btn" onclick="startWorkout('easy')">
-            <div>
-              <span class="mode-title">簡單模式（坐姿伸展）</span>
-              <span class="mode-desc">坐在椅子上即可完成，溫和活動肩頸與雙腿</span>
-            </div>
-            <span class="mode-badge">5 分鐘</span>
-          </button>
+        <div class="card">
+          <h2>請選擇今天的運動難度</h2>
 
-          <button class="mode-btn" onclick="startWorkout('medium')">
-            <div>
-              <span class="mode-title">中等模式（站立平衡）</span>
-              <span class="mode-desc">扶著椅背或原地踏步，訓練下肢肌力與穩定度</span>
-            </div>
-            <span class="mode-badge">10 分鐘</span>
-          </button>
+          <div class="safety-box">
+            ⚠️ 安全小提醒：坐姿運動請使用穩固、無滑輪的椅子；站立運動請站在椅背旁方便攙扶。若感到頭暈或關節不適，請立即按「暫停」休息。
+          </div>
 
-          <button class="mode-btn" onclick="startWorkout('demo')">
-            <div>
-              <span class="mode-title">展示體驗模式（快速測試）</span>
-              <span class="mode-desc">課堂與競賽現場展示專用，15 秒體驗完整流程（不影響真實簽到天數）</span>
+          <!-- 獨立雙聲道＋音量滑桿面板（首頁預選） -->
+          <div class="audio-panel">
+            <div class="audio-panel-header">
+              <span class="audio-panel-title">🎛️ 聲音與音量設定（可分開靜音與微調）</span>
+              <button class="voice-mode-btn" data-voice-mode onclick="toggleVoiceMode()">🗣️ 語音：國語合成</button>
             </div>
-            <span class="mode-badge demo">15 秒</span>
-          </button>
+            <div class="audio-channels two-col">
+              <div class="channel-box">
+                <button class="audio-toggle-btn on" data-voice-toggle onclick="toggleVoice()">🔊 引導語音：開啟</button>
+                <div class="vol-control-row">
+                  <button class="vol-step-btn" aria-label="降低語音音量" onclick="stepVoiceVolume(-10)">−</button>
+                  <input class="vol-slider" type="range" min="0" max="100" step="5" value="90" data-voice-slider oninput="onVoiceSliderInput(this.value)" onchange="previewVoiceVolume()" aria-label="引導語音音量" />
+                  <button class="vol-step-btn" aria-label="提高語音音量" onclick="stepVoiceVolume(10)">＋</button>
+                  <span class="vol-pct" data-voice-pct>90%</span>
+                </div>
+              </div>
+
+              <div class="channel-box">
+                <button class="audio-toggle-btn bgm-on" data-bgm-toggle onclick="toggleBgm()">🎵 背景音樂：開啟</button>
+                <div class="vol-control-row">
+                  <button class="vol-step-btn" aria-label="降低音樂音量" onclick="stepBgmVolume(-10)">−</button>
+                  <input class="vol-slider bgm-slider" type="range" min="0" max="100" step="5" value="35" data-bgm-slider oninput="onBgmSliderInput(this.value)" aria-label="背景音樂音量" />
+                  <button class="vol-step-btn" aria-label="提高音樂音量" onclick="stepBgmVolume(10)">＋</button>
+                  <span class="vol-pct" data-bgm-pct>35%</span>
+                </div>
+              </div>
+            </div>
+            <div class="bgm-bar">
+              <span class="bgm-track-info" data-bgm-status>🎵 正在載入音樂清單...</span>
+              <button class="bgm-next-btn" data-bgm-next onclick="nextTrack()" disabled>⏭ 換下一首</button>
+            </div>
+          </div>
+
+          <div class="mode-list">
+            <button class="mode-btn" onclick="startWorkout('easy')">
+              <div>
+                <span class="mode-title">簡單模式（坐姿伸展）</span>
+                <span class="mode-desc">全程坐在椅子上完成，附 5 秒預備與組間休息</span>
+              </div>
+              <span class="mode-badge">5 分鐘</span>
+            </button>
+
+            <button class="mode-btn" onclick="startWorkout('medium')">
+              <div>
+                <span class="mode-title">中等模式（站立平衡）</span>
+                <span class="mode-desc">扶著椅背或原地踏步，訓練下肢肌力與穩定度</span>
+              </div>
+              <span class="mode-badge">10 分鐘</span>
+            </button>
+
+            <button class="mode-btn" onclick="startWorkout('demo')">
+              <div>
+                <span class="mode-title">展示體驗模式（快速測試）</span>
+                <span class="mode-desc">現場展示專用，約 19 秒體驗預備、輪播、休息與徽章完整流程</span>
+              </div>
+              <span class="mode-badge demo">體驗版</span>
+            </button>
+          </div>
+
+          <!-- 選填：免密碼跨裝置同步 -->
+          <details class="sync-details">
+            <summary>☁️ 換手機／跨裝置同步運動紀錄（選填）</summary>
+            <div class="sync-body">
+              輸入一組好記的「個人代號」（例如：王阿公0512），以後在平板、手機或不同瀏覽器輸入相同代號，就能帶回連續天數與累計分鐘數。
+              <div class="sync-row">
+                <input type="text" id="syncCodeInput" placeholder="輸入個人代號（2~16字）" maxlength="16" />
+                <button class="btn-primary" style="padding: 10px 16px; border: none; border-radius: 10px; color: #fff; font-weight: 800; cursor: pointer;" onclick="connectSyncCode()">連結並同步</button>
+              </div>
+              <div id="syncStatusMsg" class="sync-status-msg"></div>
+            </div>
+          </details>
         </div>
       </div>
 
-      <!-- 步驟 B：運動引導進行中（動態圖解輪播 + 獨立雙聲道控制） -->
+      <!-- 步驟 B：運動進行中（大螢幕雙欄一屏免捲動） -->
       <div id="viewActive" class="card hidden">
         <div class="workout-header">
-          <span class="step-indicator" id="stepCounter">動作 1 / 3</span>
+          <span class="step-indicator" id="stepCounter" aria-live="polite">準備開始</span>
+          <span class="wakelock-pill hidden" id="wakeLockBadge">☀️ 螢幕恆亮中</span>
         </div>
 
-        <!-- 獨立聲音設定面板（運動中即時控制） -->
-        <div class="audio-panel">
-          <div class="audio-toggle-row">
-            <button class="audio-toggle-btn on" data-voice-toggle onclick="toggleVoice()">🔊 引導語音：開啟</button>
-            <button class="audio-toggle-btn bgm-on" data-bgm-toggle onclick="toggleBgm()">🎵 背景音樂：開啟</button>
+        <div id="pausedBanner" class="paused-banner hidden" role="status">
+          ⏸ 運動已暫停，休息一下再按「繼續運動」
+        </div>
+
+        <div class="workout-layout">
+          <!-- 左欄：動作標題、動態坐/站姿圖解、呼吸光環與指導語 -->
+          <div class="workout-left">
+            <h2 id="exerciseTitle" style="text-align: center; font-size: 1.65rem; margin-bottom: 10px;">準備就緒</h2>
+
+            <div class="carousel-box">
+              <div class="pose-top-row">
+                <div class="pose-label" id="poseFrameLabel">請坐穩或扶好椅背</div>
+                <div class="breath-pill inhale" id="breathPill">
+                  <span class="breath-ring"></span>
+                  <span id="breathText">吸氣預備</span>
+                </div>
+              </div>
+              <div class="svg-stage" id="svgStage"></div>
+            </div>
+
+            <div class="instruction-text" id="instructionText" aria-live="polite">
+              請調整好姿勢，倒數結束後我們就開始囉！
+            </div>
           </div>
-          <div class="bgm-bar">
-            <span class="bgm-track-info" data-bgm-status>🎵 正在載入音樂清單...</span>
-            <button class="bgm-next-btn" data-bgm-next onclick="nextTrack()" disabled>⏭ 換下一首</button>
+
+          <!-- 右欄：大倒數計時、進度條、精簡雙聲道滑桿與操控按鈕 -->
+          <div class="workout-right">
+            <div class="timer-display" id="timerText" aria-live="off">00:05</div>
+
+            <div class="progress-track">
+              <div class="progress-fill" id="progressBar"></div>
+            </div>
+
+            <div class="action-row" style="margin-bottom: 10px;">
+              <button class="btn-large btn-warning" id="btnPauseResume" onclick="togglePause()">⏸ 暫停運動</button>
+              <button class="btn-large btn-primary" onclick="repeatVoice()">🔊 再聽一次</button>
+            </div>
+            <div class="action-row" style="margin-bottom: 14px;">
+              <button class="btn-large btn-danger" onclick="requestStopWorkout()">⏹ 結束運動</button>
+            </div>
+
+            <!-- 運動中隨時微調音量與切歌 -->
+            <div class="audio-panel" style="margin-bottom: 0;">
+              <div class="audio-channels">
+                <div class="channel-box">
+                  <button class="audio-toggle-btn on" data-voice-toggle onclick="toggleVoice()">🔊 引導語音：開啟</button>
+                  <div class="vol-control-row">
+                    <button class="vol-step-btn" aria-label="降低語音音量" onclick="stepVoiceVolume(-10)">−</button>
+                    <input class="vol-slider" type="range" min="0" max="100" step="5" value="90" data-voice-slider oninput="onVoiceSliderInput(this.value)" onchange="previewVoiceVolume()" aria-label="引導語音音量" />
+                    <button class="vol-step-btn" aria-label="提高語音音量" onclick="stepVoiceVolume(10)">＋</button>
+                    <span class="vol-pct" data-voice-pct>90%</span>
+                  </div>
+                </div>
+
+                <div class="channel-box">
+                  <button class="audio-toggle-btn bgm-on" data-bgm-toggle onclick="toggleBgm()">🎵 背景音樂：開啟</button>
+                  <div class="vol-control-row">
+                    <button class="vol-step-btn" aria-label="降低音樂音量" onclick="stepBgmVolume(-10)">−</button>
+                    <input class="vol-slider bgm-slider" type="range" min="0" max="100" step="5" value="35" data-bgm-slider oninput="onBgmSliderInput(this.value)" aria-label="背景音樂音量" />
+                    <button class="vol-step-btn" aria-label="提高音樂音量" onclick="stepBgmVolume(10)">＋</button>
+                    <span class="vol-pct" data-bgm-pct>35%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="bgm-bar">
+                <span class="bgm-track-info" data-bgm-status>🎵 正在載入音樂清單...</span>
+                <button class="bgm-next-btn" data-bgm-next onclick="nextTrack()" disabled>⏭ 換下一首</button>
+              </div>
+            </div>
           </div>
-        </div>
-
-        <div id="pausedBanner" class="paused-banner hidden">
-          ⏸ 運動已暫停，休息一下再按下方「繼續運動」
-        </div>
-
-        <h2 id="exerciseTitle" style="text-align: center; font-size: 1.8rem;">雙手向上伸展</h2>
-        <div class="timer-display" id="timerText">00:30</div>
-
-        <div class="progress-track">
-          <div class="progress-fill" id="progressBar"></div>
-        </div>
-
-        <div class="carousel-box">
-          <div class="pose-label" id="poseFrameLabel">動作一：雙手自然垂放</div>
-          <div class="svg-stage" id="svgStage"></div>
-        </div>
-
-        <div class="instruction-text" id="instructionText">
-          跟著節拍慢慢吸氣，雙手向上舉高，肩膀放輕鬆。
-        </div>
-
-        <div class="action-row" style="margin-bottom: 12px;">
-          <button class="btn-large btn-warning" id="btnPauseResume" onclick="togglePause()">⏸ 暫停運動</button>
-          <button class="btn-large btn-primary" onclick="repeatVoice()">🔊 再聽一次指導</button>
-        </div>
-        <div class="action-row">
-          <button class="btn-large btn-danger" onclick="requestStopWorkout()">⏹ 結束運動</button>
         </div>
       </div>
 
-      <!-- 步驟 C：運動完成與 Canvas 成就徽章生成 -->
+      <!-- 步驟 C：運動完成、分級徽章與零打字稱呼快選 -->
       <div id="viewComplete" class="card hidden">
-        <h2 style="text-align: center; color: var(--success); font-size: 1.9rem;">🎉 恭喜完成今日運動！</h2>
+        <h2 style="text-align: center; color: var(--success); font-size: 1.8rem;">🎉 恭喜完成今日運動！</h2>
         <div class="complete-note" id="completeStatusText">系統已自動為您記錄簽到天數，並製作專屬成就徽章：</div>
 
         <div class="canvas-wrapper">
-          <canvas id="badgeCanvas" width="600" height="400" class="hidden"></canvas>
+          <canvas id="badgeCanvas" width="600" height="420" class="hidden"></canvas>
           <img id="badgePreviewImg" class="badge-preview-img" alt="數位健康成就徽章" />
           <p class="save-hint">💡 若使用手機或 LINE 開啟，可直接長按上方圖片儲存至相簿</p>
         </div>
 
         <div class="name-input-group">
-          <label for="userNameInput">發布顯示名稱（選填，不填則直接顯示「長青運動員」）：</label>
-          <input type="text" id="userNameInput" placeholder="例如：王阿公、陳阿嬤" maxlength="15" />
+          <label for="userNameInput">零打字稱呼快選（直接點選，或手動輸入）：</label>
+          <div class="preset-name-row">
+            <button type="button" class="preset-chip" onclick="selectPresetName('民雄阿公')">👴 民雄阿公</button>
+            <button type="button" class="preset-chip" onclick="selectPresetName('民雄阿嬤')">👵 民雄阿嬤</button>
+            <button type="button" class="preset-chip" onclick="selectPresetName('活力鄰居')">😊 活力鄰居</button>
+            <button type="button" class="preset-chip" onclick="selectPresetName('健康長輩')">💪 健康長輩</button>
+          </div>
+          <input type="text" id="userNameInput" placeholder="選填，不填則顯示「長青運動員」" maxlength="15" oninput="highlightPresetChips()" />
         </div>
 
-        <div class="action-row" style="margin-bottom: 12px;">
+        <div class="action-row" style="margin-bottom: 10px;">
           <button class="btn-large btn-success" id="btnPublish" onclick="publishToWall()">📢 一鍵發布到雲端動態牆</button>
         </div>
-        <div class="action-row" style="margin-bottom: 12px;">
+        <div class="action-row" style="margin-bottom: 10px;">
           <button class="btn-large btn-primary" onclick="shareBadge()">📤 分享給親友 (LINE)</button>
           <button class="btn-large btn-outline" onclick="downloadBadge()">💾 下載徽章圖片</button>
         </div>
@@ -855,17 +1376,29 @@
     <section id="sectionSocial" class="section">
       <div id="socialPausedBanner" class="resume-workout-banner hidden">
         <span style="font-weight: 800; color: #78350F;">⏸ 您剛才的運動與音樂已自動暫停</span>
-        <button class="btn-primary" style="padding: 10px 18px; border: none; border-radius: 10px; color: #fff; font-size: 1.1rem; font-weight: 800; cursor: pointer;" onclick="switchTab('exercise')">
+        <button class="btn-primary" style="padding: 10px 18px; border: none; border-radius: 10px; color: #fff; font-size: 1.05rem; font-weight: 800; cursor: pointer;" onclick="switchTab('exercise')">
           返回繼續運動
         </button>
       </div>
 
       <div class="card" style="background-color: #EFF6FF; border-color: var(--primary);">
         <h2>鄰里與親友健康佈告欄</h2>
-        <p>不用打字！點擊下方的大按鈕，就能即時幫所有連線的長輩與鄰居加油打氣。</p>
+        <p>不用打字！點擊「唸給我聽」就能聽鄰居戰績，點下方大按鈕就能加油打氣。</p>
         <div class="cloud-status" id="cloudStatus">⏳ 正在連線至雲端動態牆...</div>
       </div>
+
+      <!-- 動態牆篩選列 -->
+      <div class="wall-filter-bar">
+        <button class="filter-btn active" id="filterAll" onclick="setWallFilter('all')">全部動態</button>
+        <button class="filter-btn" id="filterOfficial" onclick="setWallFilter('official')">僅正式簽到</button>
+        <button class="filter-btn" id="filterMine" onclick="setWallFilter('mine')">我的紀錄</button>
+      </div>
+
       <div id="feedContainer"></div>
+
+      <div id="loadMoreWrapper" class="hidden" style="text-align: center; margin-top: 12px;">
+        <button class="btn-large btn-outline" id="btnLoadMore" style="max-width: 340px; width: 100%;" onclick="loadMorePosts()">⬇️ 載入更多歷史動態</button>
+      </div>
     </section>
   </main>
 
@@ -878,7 +1411,7 @@
   <div id="confirmStopModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="stopModalTitle">
     <div class="modal-box">
       <h3 id="stopModalTitle">確定要結束運動嗎？</h3>
-      <p>現在結束將不會記錄這次的簽到天數喔！如果只是想休息一下，可以按「繼續運動」。</p>
+      <p>現在結束將不會記錄這次的簽到天數喔！如果只是想喘口氣，可以按「繼續運動」。</p>
       <div class="action-row">
         <button class="btn-large btn-success" onclick="cancelStopWorkout()">▶ 繼續運動</button>
         <button class="btn-large btn-danger" onclick="confirmStopWorkout()">⏹ 確定結束</button>
@@ -886,8 +1419,9 @@
     </div>
   </div>
 
-  <!-- 隱藏式 HTML5 背景音樂播放器 -->
+  <!-- 背景音樂播放器 & 預錄語音播放器 -->
   <audio id="bgmPlayer" preload="none"></audio>
+  <audio id="voiceFilePlayer" preload="none"></audio>
 
   <script type="module">
     /* =========================================
@@ -899,11 +1433,15 @@
       collection,
       addDoc,
       updateDoc,
+      setDoc,
+      getDoc,
+      getDocs,
       doc,
       increment,
       query,
       orderBy,
       limit,
+      startAfter,
       onSnapshot,
       serverTimestamp
     } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
@@ -924,176 +1462,314 @@
     const postsCollection = collection(db, "posts");
 
     /* =========================================
-       3. 運動資料庫與向量示意圖
+       3. 坐姿（含椅子）＆ 站姿（含椅背）高對比 SVG 圖庫
        ========================================= */
+    const CHAIR_SEAT_SVG = `
+      <rect x="46" y="132" width="108" height="14" rx="5" fill="#64748B"/>
+      <line x1="56" y1="146" x2="56" y2="192" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+      <line x1="144" y1="146" x2="144" y2="192" stroke="#475569" stroke-width="10" stroke-linecap="round"/>
+    `;
+
+    const CHAIR_SIDE_SUPPORT_SVG = `
+      <rect x="20" y="102" width="12" height="86" rx="4" fill="#94A3B8"/>
+      <line x1="20" y1="138" x2="56" y2="138" stroke="#94A3B8" stroke-width="9" stroke-linecap="round"/>
+      <line x1="52" y1="138" x2="52" y2="188" stroke="#94A3B8" stroke-width="8" stroke-linecap="round"/>
+    `;
+
     const POSE_SVGS = {
-      armsDown: `
+      // 坐姿系列（明確畫出椅子與坐姿大腿）
+      seatedArmsDown: `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
-          <circle cx="100" cy="42" r="22" fill="#1D4ED8"/>
-          <line x1="100" y1="64" x2="100" y2="135" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
-          <line x1="100" y1="80" x2="65" y2="130" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="80" x2="135" y2="130" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="135" x2="78" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
-          <line x1="100" y1="135" x2="122" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          ${CHAIR_SEAT_SVG}
+          <circle cx="100" cy="44" r="21" fill="#1D4ED8"/>
+          <line x1="100" y1="65" x2="100" y2="128" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="100" y1="80" x2="66" y2="122" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
+          <line x1="100" y1="80" x2="134" y2="122" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
+          <polyline points="100,128 74,132 74,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="100,128 126,132 126,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`,
-      armsUp: `
+      seatedArmsUp: `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
-          <circle cx="100" cy="42" r="22" fill="#15803D"/>
-          <line x1="100" y1="64" x2="100" y2="135" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
-          <line x1="100" y1="80" x2="55" y2="30" stroke="#15803D" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="80" x2="145" y2="30" stroke="#15803D" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="135" x2="78" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
-          <line x1="100" y1="135" x2="122" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          ${CHAIR_SEAT_SVG}
+          <path d="M38 66 L38 30 M30 40 L38 28 L46 40" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M162 66 L162 30 M154 40 L162 28 L170 40" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="100" cy="44" r="21" fill="#15803D"/>
+          <line x1="100" y1="65" x2="100" y2="128" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="100" y1="80" x2="58" y2="30" stroke="#15803D" stroke-width="12" stroke-linecap="round"/>
+          <line x1="100" y1="80" x2="142" y2="30" stroke="#15803D" stroke-width="12" stroke-linecap="round"/>
+          <polyline points="100,128 74,132 74,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="100,128 126,132 126,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`,
-      armsWide: `
+      seatedArmsWide: `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
-          <circle cx="100" cy="42" r="22" fill="#B45309"/>
-          <line x1="100" y1="64" x2="100" y2="135" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
-          <line x1="100" y1="82" x2="35" y2="82" stroke="#B45309" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="82" x2="165" y2="82" stroke="#B45309" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="135" x2="78" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
-          <line x1="100" y1="135" x2="122" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          ${CHAIR_SEAT_SVG}
+          <path d="M52 60 L24 60 M32 52 L22 60 L32 68" fill="none" stroke="#B45309" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M148 60 L176 60 M168 52 L178 60 L168 68" fill="none" stroke="#B45309" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="100" cy="44" r="21" fill="#B45309"/>
+          <line x1="100" y1="65" x2="100" y2="128" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="100" y1="84" x2="36" y2="84" stroke="#B45309" stroke-width="12" stroke-linecap="round"/>
+          <line x1="100" y1="84" x2="164" y2="84" stroke="#B45309" stroke-width="12" stroke-linecap="round"/>
+          <polyline points="100,128 74,132 74,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="100,128 126,132 126,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>`,
-      kneeLift: `
+      seatedKneeLift: `
         <svg viewBox="0 0 200 200" width="100%" height="100%">
-          <circle cx="100" cy="42" r="22" fill="#1D4ED8"/>
-          <line x1="100" y1="64" x2="100" y2="130" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
-          <line x1="100" y1="82" x2="55" y2="105" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="82" x2="145" y2="105" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
-          <line x1="100" y1="130" x2="80" y2="185" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
-          <polyline points="100,130 142,130 142,175" fill="none" stroke="#15803D" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+          ${CHAIR_SEAT_SVG}
+          <path d="M166 158 L166 122 M158 132 L166 120 L174 132" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="100" cy="44" r="21" fill="#1D4ED8"/>
+          <line x1="100" y1="65" x2="100" y2="128" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="100" y1="82" x2="62" y2="132" stroke="#1D4ED8" stroke-width="11" stroke-linecap="round"/>
+          <line x1="100" y1="82" x2="138" y2="132" stroke="#1D4ED8" stroke-width="11" stroke-linecap="round"/>
+          <polyline points="100,128 74,132 74,184" fill="none" stroke="#0F172A" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+          <polyline points="100,128 136,110 144,162" fill="none" stroke="#15803D" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+
+      // 站姿系列（含側邊椅背輔助與方向箭頭）
+      standArmsDown: `
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          ${CHAIR_SIDE_SUPPORT_SVG}
+          <circle cx="114" cy="40" r="21" fill="#1D4ED8"/>
+          <line x1="114" y1="61" x2="114" y2="132" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="114" y1="78" x2="78" y2="126" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
+          <line x1="114" y1="78" x2="150" y2="126" stroke="#1D4ED8" stroke-width="12" stroke-linecap="round"/>
+          <line x1="114" y1="132" x2="92" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          <line x1="114" y1="132" x2="136" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+        </svg>`,
+      standArmsUp: `
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          ${CHAIR_SIDE_SUPPORT_SVG}
+          <path d="M54 64 L54 28 M46 38 L54 26 L62 38" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M174 64 L174 28 M166 38 L174 26 L182 38" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="114" cy="40" r="21" fill="#15803D"/>
+          <line x1="114" y1="61" x2="114" y2="132" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="114" y1="78" x2="72" y2="28" stroke="#15803D" stroke-width="12" stroke-linecap="round"/>
+          <line x1="114" y1="78" x2="156" y2="28" stroke="#15803D" stroke-width="12" stroke-linecap="round"/>
+          <line x1="114" y1="132" x2="92" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          <line x1="114" y1="132" x2="136" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+        </svg>`,
+      standArmsWide: `
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          ${CHAIR_SIDE_SUPPORT_SVG}
+          <path d="M70 58 L44 58 M52 50 L42 58 L52 66" fill="none" stroke="#B45309" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M156 58 L182 58 M174 50 L184 58 L174 66" fill="none" stroke="#B45309" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="114" cy="40" r="21" fill="#B45309"/>
+          <line x1="114" y1="61" x2="114" y2="132" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="114" y1="80" x2="54" y2="80" stroke="#B45309" stroke-width="12" stroke-linecap="round"/>
+          <line x1="114" y1="80" x2="174" y2="80" stroke="#B45309" stroke-width="12" stroke-linecap="round"/>
+          <line x1="114" y1="132" x2="92" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          <line x1="114" y1="132" x2="136" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+        </svg>`,
+      standKneeLift: `
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          ${CHAIR_SIDE_SUPPORT_SVG}
+          <path d="M174 156 L174 120 M166 130 L174 118 L182 130" fill="none" stroke="#15803D" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="114" cy="40" r="21" fill="#1D4ED8"/>
+          <line x1="114" y1="61" x2="114" y2="128" stroke="#0F172A" stroke-width="14" stroke-linecap="round"/>
+          <line x1="114" y1="78" x2="32" y2="104" stroke="#1D4ED8" stroke-width="11" stroke-linecap="round"/>
+          <line x1="114" y1="78" x2="152" y2="108" stroke="#1D4ED8" stroke-width="11" stroke-linecap="round"/>
+          <line x1="114" y1="128" x2="94" y2="186" stroke="#0F172A" stroke-width="13" stroke-linecap="round"/>
+          <polyline points="114,128 154,128 154,174" fill="none" stroke="#15803D" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>`,
+
+      // 休息喘氣圖示
+      restRelax: `
+        <svg viewBox="0 0 200 200" width="100%" height="100%">
+          <circle cx="100" cy="100" r="76" fill="#DCFCE7" stroke="#15803D" stroke-width="6"/>
+          <text x="100" y="96" text-anchor="middle" font-size="34" font-weight="900" fill="#14532D">休息一下</text>
+          <text x="100" y="132" text-anchor="middle" font-size="22" font-weight="700" fill="#166534">慢慢深呼吸</text>
         </svg>`
     };
 
-    const ROUTINES = {
+    // 內建預設課程（亦可放置 data/routines.json 自動覆寫擴充）
+    const DEFAULT_ROUTINES = {
       easy: {
         name: "簡單模式（5分鐘坐姿伸展）",
+        minutes: 5,
+        prepSec: 5,
+        restSec: 10,
         steps: [
           {
-            title: "第一組：雙手向上深呼吸",
-            duration: 100,
-            instruction: "坐在椅子上，吸氣時雙手慢慢舉高，吐氣時放下。",
+            title: "第一組：坐姿雙手向上深呼吸",
+            duration: 90,
+            audioKey: "easy_1",
+            instruction: "坐在穩固的椅子上，吸氣時雙手慢慢舉高，吐氣時放鬆放下。",
             frames: [
-              { label: "預備：雙手自然放下", svg: POSE_SVGS.armsDown },
-              { label: "伸展：雙手向上舉高", svg: POSE_SVGS.armsUp }
+              { label: "預備：坐姿雙手自然垂放", breath: "吸氣預備", svgKey: "seatedArmsDown" },
+              { label: "伸展：雙手向上舉高", breath: "慢慢吐氣", svgKey: "seatedArmsUp" }
             ]
           },
           {
-            title: "第二組：擴胸舒展運動",
-            duration: 100,
-            instruction: "雙手向左右兩側打開，感覺胸口慢慢展開。",
+            title: "第二組：坐姿擴胸舒展運動",
+            duration: 90,
+            audioKey: "easy_2",
+            instruction: "背部輕輕挺直，雙手向左右兩側打開，感受胸口自然展開。",
             frames: [
-              { label: "預備：雙手收回身側", svg: POSE_SVGS.armsDown },
-              { label: "擴胸：雙臂水平張開", svg: POSE_SVGS.armsWide }
+              { label: "預備：雙手收回身側", breath: "吸氣預備", svgKey: "seatedArmsDown" },
+              { label: "擴胸：雙臂水平張開", breath: "慢慢吐氣", svgKey: "seatedArmsWide" }
             ]
           },
           {
             title: "第三組：坐姿輪流抬膝",
-            duration: 100,
-            instruction: "雙手扶穩椅面，左右腳輪流輕輕抬起。",
+            duration: 95,
+            audioKey: "easy_3",
+            instruction: "雙手輕扶椅面保持穩定，左右膝蓋輪流輕輕抬起再放下。",
             frames: [
-              { label: "預備：雙腳平放地面", svg: POSE_SVGS.armsDown },
-              { label: "抬腿：膝蓋向上抬起", svg: POSE_SVGS.kneeLift }
+              { label: "預備：雙腳平放地面", breath: "吸氣預備", svgKey: "seatedArmsDown" },
+              { label: "抬腿：膝蓋輕輕抬高", breath: "慢慢吐氣", svgKey: "seatedKneeLift" }
             ]
           }
         ]
       },
       medium: {
         name: "中等模式（10分鐘站立平衡）",
+        minutes: 10,
+        prepSec: 5,
+        restSec: 10,
         steps: [
           {
-            title: "第一組：站姿雙臂畫圓",
-            duration: 200,
-            instruction: "雙腳與肩同寬站穩，雙手向上伸展活動肩關節。",
+            title: "第一組：站姿雙臂向上伸展",
+            duration: 190,
+            audioKey: "med_1",
+            instruction: "雙腳與肩同寬站穩在椅背旁，吸氣雙手向上延伸活動肩關節。",
             frames: [
-              { label: "預備：站姿雙手垂放", svg: POSE_SVGS.armsDown },
-              { label: "伸展：雙手向上延伸", svg: POSE_SVGS.armsUp }
+              { label: "預備：站姿雙手垂放", breath: "吸氣預備", svgKey: "standArmsDown" },
+              { label: "伸展：雙手向上延伸", breath: "慢慢吐氣", svgKey: "standArmsUp" }
             ]
           },
           {
-            title: "第二組：平舉擴胸平衡",
-            duration: 200,
-            instruction: "雙臂向兩側平舉，保持呼吸順暢與身體穩定。",
+            title: "第二組：站姿平舉擴胸平衡",
+            duration: 190,
+            audioKey: "med_2",
+            instruction: "雙臂向兩側平舉展開，保持呼吸順暢與身體穩定。",
             frames: [
-              { label: "預備：放鬆肩頸", svg: POSE_SVGS.armsDown },
-              { label: "平舉：雙手向兩側展開", svg: POSE_SVGS.armsWide }
+              { label: "預備：放鬆肩頸", breath: "吸氣預備", svgKey: "standArmsDown" },
+              { label: "平舉：雙手向兩側展開", breath: "慢慢吐氣", svgKey: "standArmsWide" }
             ]
           },
           {
-            title: "第三組：原地高抬腿踏步",
-            duration: 200,
-            instruction: "跟著節拍原地踏步，可隨時扶著椅背保持安全。",
+            title: "第三組：扶椅原地高抬腿踏步",
+            duration: 195,
+            audioKey: "med_3",
+            instruction: "單手扶穩椅背，跟著節拍慢慢原地抬膝踏步，注意安全。",
             frames: [
-              { label: "左腳著地預備", svg: POSE_SVGS.armsDown },
-              { label: "右膝抬高踏步", svg: POSE_SVGS.kneeLift }
+              { label: "預備：雙腳站穩扶好椅背", breath: "吸氣預備", svgKey: "standArmsDown" },
+              { label: "踏步：膝蓋抬高踏步", breath: "慢慢吐氣", svgKey: "standKneeLift" }
             ]
           }
         ]
       },
       demo: {
         name: "展示體驗模式（完整流程示範）",
+        minutes: 0,
+        prepSec: 3,
+        restSec: 2,
         steps: [
           {
-            title: "暖身：雙手向上伸展",
-            duration: 5,
-            instruction: "吸氣時雙手慢慢舉高，肩膀放輕鬆。",
+            title: "暖身：坐姿雙手向上伸展",
+            duration: 4,
+            audioKey: "demo_1",
+            instruction: "坐在椅子上，吸氣時雙手慢慢舉高，肩膀放輕鬆。",
             frames: [
-              { label: "動作一：雙手自然垂放", svg: POSE_SVGS.armsDown },
-              { label: "動作二：雙手向上舉高", svg: POSE_SVGS.armsUp }
+              { label: "動作一：坐姿雙手垂放", breath: "吸氣預備", svgKey: "seatedArmsDown" },
+              { label: "動作二：雙手向上舉高", breath: "慢慢吐氣", svgKey: "seatedArmsUp" }
             ]
           },
           {
-            title: "核心：平舉擴胸運動",
-            duration: 5,
-            instruction: "雙手向左右打開，保持深呼吸。",
+            title: "核心：坐姿平舉擴胸",
+            duration: 4,
+            audioKey: "demo_2",
+            instruction: "雙手向左右展開，保持平穩深呼吸。",
             frames: [
-              { label: "動作一：雙手收回", svg: POSE_SVGS.armsDown },
-              { label: "動作二：雙臂水平張開", svg: POSE_SVGS.armsWide }
+              { label: "動作一：雙手收回", breath: "吸氣預備", svgKey: "seatedArmsDown" },
+              { label: "動作二：雙臂水平張開", breath: "慢慢吐氣", svgKey: "seatedArmsWide" }
             ]
           },
           {
-            title: "下肢：原地踏步抬膝",
-            duration: 5,
-            instruction: "阿公阿嬤很棒喔，最後五秒鐘，跟著節拍踏步！",
+            title: "下肢：扶椅原地踏步抬膝",
+            duration: 4,
+            audioKey: "demo_3",
+            instruction: "阿公阿嬤很棒喔，最後四秒鐘，扶著椅背跟著節拍踏步！",
             frames: [
-              { label: "動作一：雙腳站穩", svg: POSE_SVGS.armsDown },
-              { label: "動作二：膝蓋抬起", svg: POSE_SVGS.kneeLift }
+              { label: "動作一：扶椅雙腳站穩", breath: "吸氣預備", svgKey: "standArmsDown" },
+              { label: "動作二：膝蓋抬起踏步", breath: "慢慢吐氣", svgKey: "standKneeLift" }
             ]
           }
         ]
       }
     };
 
+    let ROUTINES = structuredClone(DEFAULT_ROUTINES);
+
+    // 支援外部 data/routines.json 動態擴充課程（失敗時自動沿用內建預設值）
+    async function loadExternalRoutines() {
+      try {
+        const res = await fetch(`./data/routines.json?t=${Date.now()}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.easy && data.medium) {
+            ROUTINES = { ...DEFAULT_ROUTINES, ...data };
+          }
+        }
+      } catch (e) {}
+    }
+    loadExternalRoutines();
+
     /* =========================================
-       4. 狀態變數與日期簽到邏輯 (LocalStorage)
+       4. 狀態變數、無障礙偏好與本週紀錄 (LocalStorage + 跨裝置同步)
        ========================================= */
     let currentModeKey = null;
     let currentRoutine = null;
+    let currentPhase = "idle"; // idle | prep | exercise | rest
     let currentStepIdx = 0;
-    let remainingSec = 0;
+
+    // 時間戳抗漂移計時狀態
+    let phaseDurationMs = 0;
+    let phaseRemainingMs = 0;
+    let phaseEndTimestamp = 0;
+    let lastDisplayedSec = -1;
     let totalRoutineSec = 0;
-    let elapsedRoutineSec = 0;
-    let frameIndex = 0;
-    let timerInterval = null;
-    let carouselInterval = null;
+    let completedPhaseSec = 0;
+    let lastBeatIdx = -1;
+    let tenSecWarned = false;
+    let tickInterval = null;
 
     let isWorkoutActive = false;
     let isPaused = false;
     let wasPausedBeforeModal = false;
+    let wakeLockSentinel = null;
 
-    // 獨立雙聲道偏好（預設皆開啟，並記憶於本機）
+    // 獨立雙聲道開關、音量（0~1）與語音偏好
     let voiceEnabled = localStorage.getItem("usr_voice_enabled") !== "false";
     let bgmEnabled = localStorage.getItem("usr_bgm_enabled") !== "false";
+    let userVoiceVol = clamp01(parseFloat(localStorage.getItem("usr_voice_vol") ?? "0.9"));
+    let userBgmVol = clamp01(parseFloat(localStorage.getItem("usr_bgm_vol") ?? "0.35"));
+    let isLargeFont = localStorage.getItem("usr_large_font") === "true";
+    let speechRate = localStorage.getItem("usr_speech_rate") === "slow" ? 0.76 : 0.92;
+    let voiceMode = localStorage.getItem("usr_voice_mode") === "taiwanese" ? "taiwanese" : "tts";
+
+    // 本機裝置識別（供「我的紀錄」篩選）
+    let deviceClientId = localStorage.getItem("usr_client_id");
+    if (!deviceClientId) {
+      deviceClientId = "dev_" + Math.random().toString(36).slice(2, 10) + Date.now().toString(36);
+      localStorage.setItem("usr_client_id", deviceClientId);
+    }
+
+    let syncCode = localStorage.getItem("usr_sync_code") || "";
+
+    // 音訊與混音管線（解決 iOS Safari 音量唯讀問題）
+    const GITHUB_MUSIC_API = "https://api.github.com/repos/Geroge941105/the-elderly-exercise-web/contents/music";
+    const bgmPlayer = document.getElementById("bgmPlayer");
+    const voiceFilePlayer = document.getElementById("voiceFilePlayer");
+    if (location.protocol.startsWith("http")) {
+      bgmPlayer.crossOrigin = "anonymous";
+    }
 
     let sharedAudioCtx = null;
+    let bgmGainNode = null;
+    let bgmMediaSource = null;
+    let isDucking = false;
+    let duckSafetyTimer = null;
     let zhTwVoice = null;
-
-    // 動態背景音樂清單設定
-    const GITHUB_MUSIC_API = "https://api.github.com/repos/Geroge941105/the-elderly-exercise-web/contents/music";
-    const BGM_VOLUME_NORMAL = 0.35;
-    const BGM_VOLUME_DUCKED = 0.10; // 語音引導說話時自動壓低背景音樂
-    const bgmPlayer = document.getElementById("bgmPlayer");
-    bgmPlayer.volume = BGM_VOLUME_NORMAL;
 
     let bgmPlaylist = [];
     let currentTrackIdx = 0;
@@ -1101,13 +1777,75 @@
     let bgmLoadedSourceSrc = "";
 
     let latestBadgeDataUrl = "";
-    let latestBadgeMeta = { streakDays: 1, routineName: "", dateStr: "", isDemo: false };
+    let latestBadgeMeta = { streakDays: 1, routineName: "", dateStr: "", isDemo: false, minutes: 0 };
     let badgePublished = false;
 
+    // 動態牆資料與分頁狀態
+    const WALL_PAGE_SIZE = 15;
+    let wallFilter = "all"; // all | official | mine
+    let realtimePosts = [];
+    let extraOlderPosts = [];
+    let loadedPostsMap = new Map();
+    let lastRealtimeDocSnap = null;
+    let lastLoadedDocSnap = null;
+    let hasMorePosts = false;
     const pendingReactions = new Set();
 
-    function getLocalDateStr(offsetDays = 0) {
-      const d = new Date();
+    let userReactedMap = JSON.parse(localStorage.getItem("usr_reacted_map") || "{}");
+    document.getElementById("userNameInput").value = localStorage.getItem("usr_display_name") || "";
+    document.getElementById("syncCodeInput").value = syncCode;
+
+    function clamp01(num) {
+      if (!Number.isFinite(num)) return 0.5;
+      return Math.min(1, Math.max(0, num));
+    }
+
+    function vibrateTap(ms = 20) {
+      try {
+        if (navigator.vibrate) navigator.vibrate(ms);
+      } catch (e) {}
+    }
+
+    // 離線偵測與 PWA Service Worker 註冊
+    function updateOnlineStatus() {
+      document.getElementById("offlineBanner").classList.toggle("hidden", navigator.onLine);
+    }
+    window.addEventListener("online", updateOnlineStatus);
+    window.addEventListener("offline", updateOnlineStatus);
+    updateOnlineStatus();
+
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      navigator.serviceWorker.register("./sw.js").catch(() => {});
+    }
+
+    // 套用字體大小與語速設定
+    function applyA11yPrefs() {
+      document.documentElement.classList.toggle("large-font", isLargeFont);
+      document.getElementById("btnFontToggle").textContent = isLargeFont ? "🔍 字體：特大" : "🔍 字體：標準";
+      document.getElementById("btnRateToggle").textContent = speechRate < 0.85 ? "🗣️ 語速：慢速" : "🗣️ 語速：標準";
+    }
+    applyA11yPrefs();
+
+    function toggleFontSize() {
+      vibrateTap();
+      isLargeFont = !isLargeFont;
+      localStorage.setItem("usr_large_font", String(isLargeFont));
+      applyA11yPrefs();
+    }
+
+    function toggleSpeechRate() {
+      vibrateTap();
+      speechRate = speechRate < 0.85 ? 0.92 : 0.76;
+      localStorage.setItem("usr_speech_rate", speechRate < 0.85 ? "slow" : "normal");
+      applyA11yPrefs();
+      speakText(speechRate < 0.85 ? "已切換為慢速語音" : "已切換為標準語音");
+    }
+
+    /* =========================================
+       5. 本週日曆、累計分鐘數、分級徽章邏輯與跨裝置同步
+       ========================================= */
+    function getLocalDateStr(offsetDays = 0, baseDate = new Date()) {
+      const d = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
       d.setDate(d.getDate() + offsetDays);
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, "0");
@@ -1115,30 +1853,223 @@
       return `${y}-${m}-${day}`;
     }
 
-    function readStoredStreak() {
-      const days = parseInt(localStorage.getItem("usr_streak_days") || "0", 10);
+    function getBadgeTier(days) {
+      const n = Number(days) || 1;
+      if (n >= 7) {
+        return {
+          key: "master",
+          cssClass: "tier-master",
+          label: "★★★ 健康達人",
+          border: "#78350F",
+          bg: "#FFFBEB",
+          header: "#B45309",
+          circleFill: "#FEF3C7",
+          circleStroke: "#D97706",
+          numColor: "#78350F"
+        };
+      }
+      if (n >= 3) {
+        return {
+          key: "steady",
+          cssClass: "tier-steady",
+          label: "★★ 持之以恆",
+          border: "#14532D",
+          bg: "#F8FAFC",
+          header: "#15803D",
+          circleFill: "#DCFCE7",
+          circleStroke: "#15803D",
+          numColor: "#14532D"
+        };
+      }
+      return {
+        key: "starter",
+        cssClass: "tier-starter",
+        label: "★ 活力起步",
+        border: "#1E3A8A",
+        bg: "#F8FAFC",
+        header: "#1D4ED8",
+        circleFill: "#DBEAFE",
+        circleStroke: "#1D4ED8",
+        numColor: "#1E3A8A"
+      };
+    }
+
+    function readLocalRecord() {
+      const storedDays = parseInt(localStorage.getItem("usr_streak_days") || "0", 10);
       const lastDate = localStorage.getItem("usr_last_checkin_date") || "";
+      const totalMinutes = parseInt(localStorage.getItem("usr_total_minutes") || "0", 10);
+      const checkinDates = JSON.parse(localStorage.getItem("usr_checkin_dates") || "[]");
+
       const today = getLocalDateStr(0);
       const yesterday = getLocalDateStr(-1);
+      const activeStreak = !lastDate || (lastDate !== today && lastDate !== yesterday) ? 0 : Math.max(storedDays, 0);
 
-      if (!lastDate || (lastDate !== today && lastDate !== yesterday)) {
-        return { days: 0, lastDate };
+      return {
+        streakDays: activeStreak,
+        rawStreakDays: Math.max(storedDays, 0),
+        lastDate,
+        totalMinutes: Math.max(totalMinutes, 0),
+        checkinDates: Array.isArray(checkinDates) ? checkinDates : []
+      };
+    }
+
+    function updateRecordUI() {
+      const rec = readLocalRecord();
+      document.getElementById("headerStreak").textContent = `🔥 連續運動：${rec.streakDays} 天`;
+      document.getElementById("headerMinutes").textContent = `⏱️ 累計運動：${rec.totalMinutes} 分鐘`;
+      renderWeeklyCalendar(rec.checkinDates);
+    }
+
+    function renderWeeklyCalendar(checkinDates) {
+      const grid = document.getElementById("weekGrid");
+      const today = new Date();
+      const todayStr = getLocalDateStr(0, today);
+      const dayOfWeek = today.getDay(); // 0=日, 1=一...
+      const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      const labels = ["一", "二", "三", "四", "五", "六", "日"];
+      const dateSet = new Set(checkinDates);
+
+      let completedThisWeek = 0;
+      grid.innerHTML = "";
+
+      for (let i = 0; i < 7; i++) {
+        const dStr = getLocalDateStr(diffToMonday + i, today);
+        const isDone = dateSet.has(dStr);
+        const isToday = dStr === todayStr;
+        if (isDone) completedThisWeek++;
+
+        const cell = document.createElement("div");
+        cell.className = `week-day ${isDone ? "done" : ""} ${isToday ? "today" : ""}`;
+        cell.innerHTML = `
+          <span>週${labels[i]}</span>
+          <div class="week-dot" aria-label="週${labels[i]}${isDone ? "已完成" : "尚未完成"}">${isDone ? "✓" : "·"}</div>
+        `;
+        grid.appendChild(cell);
       }
-      return { days: Math.max(days, 0), lastDate };
+
+      document.getElementById("weeklyCountText").textContent = `本週已完成 ${completedThisWeek} 天`;
     }
 
-    let userReactedMap = JSON.parse(localStorage.getItem("usr_reacted_map") || "{}");
-    document.getElementById("userNameInput").value = localStorage.getItem("usr_display_name") || "";
-
-    function updateStreakBanner() {
-      const { days } = readStoredStreak();
-      document.getElementById("headerStreak").textContent = `🔥 目前連續運動：${days} 天`;
+    async function pushProfileToCloud() {
+      if (!syncCode || !navigator.onLine) return;
+      try {
+        const rec = readLocalRecord();
+        await setDoc(
+          doc(db, "profiles", syncCode),
+          {
+            streakDays: rec.rawStreakDays,
+            lastCheckinDate: rec.lastDate,
+            totalMinutes: rec.totalMinutes,
+            checkinDates: rec.checkinDates.slice(-60),
+            updatedAt: serverTimestamp()
+          },
+          { merge: true }
+        );
+      } catch (e) {
+        console.warn("個人紀錄雲端同步失敗（請確認 Firestore profiles 規則）：", e);
+      }
     }
-    updateStreakBanner();
+
+    async function connectSyncCode() {
+      vibrateTap();
+      const raw = document.getElementById("syncCodeInput").value.trim().replace(/[\/\.\#\$\[\]]/g, "");
+      const msgEl = document.getElementById("syncStatusMsg");
+      if (raw.length < 2) {
+        msgEl.style.color = "#B91C1C";
+        msgEl.textContent = "請輸入至少 2 個字的個人代號喔！";
+        return;
+      }
+
+      syncCode = raw;
+      localStorage.setItem("usr_sync_code", syncCode);
+      msgEl.style.color = "#1D4ED8";
+      msgEl.textContent = "⏳ 正在與雲端同步個人紀錄...";
+
+      try {
+        const ref = doc(db, "profiles", syncCode);
+        const snap = await getDoc(ref);
+        const localRec = readLocalRecord();
+
+        if (snap.exists()) {
+          const cloud = snap.data();
+          const mergedDates = Array.from(new Set([...(localRec.checkinDates || []), ...(cloud.checkinDates || [])])).sort().slice(-60);
+          const mergedMinutes = Math.max(localRec.totalMinutes, Number(cloud.totalMinutes) || 0);
+          const latestDate = [localRec.lastDate, cloud.lastCheckinDate || ""].sort().pop() || "";
+          const mergedStreak = Math.max(localRec.rawStreakDays, Number(cloud.streakDays) || 0);
+
+          localStorage.setItem("usr_checkin_dates", JSON.stringify(mergedDates));
+          localStorage.setItem("usr_total_minutes", String(mergedMinutes));
+          if (latestDate) localStorage.setItem("usr_last_checkin_date", latestDate);
+          localStorage.setItem("usr_streak_days", String(mergedStreak));
+        }
+
+        await pushProfileToCloud();
+        updateRecordUI();
+        msgEl.style.color = "#15803D";
+        msgEl.textContent = `✅ 已連結代號「${syncCode}」並完成雙向同步！`;
+      } catch (err) {
+        msgEl.style.color = "#B91C1C";
+        msgEl.textContent = "⚠️ 雲端同步失敗，請確認網路與 Firestore profiles 規則已開啟。";
+      }
+    }
+
+    updateRecordUI();
+    if (syncCode) {
+      document.getElementById("syncStatusMsg").textContent = `🔗 目前已連結跨裝置代號：${syncCode}`;
+    }
 
     /* =========================================
-       5. 動態音樂清單載入與無限輪播引擎
+       6. Web Audio 混音管線（iOS 音量＋淡入淡出＋動態歌單）
        ========================================= */
+    function initAudioContext() {
+      try {
+        if (!sharedAudioCtx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (AudioCtx) {
+            sharedAudioCtx = new AudioCtx();
+          }
+        }
+        if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
+          sharedAudioCtx.resume().catch(() => {});
+        }
+        // 將 bgmPlayer 接入 GainNode，讓 iOS Safari / LINE 瀏覽器也能自由調音量
+        if (sharedAudioCtx && !bgmMediaSource && location.protocol.startsWith("http")) {
+          bgmMediaSource = sharedAudioCtx.createMediaElementSource(bgmPlayer);
+          bgmGainNode = sharedAudioCtx.createGain();
+          bgmGainNode.gain.setValueAtTime(bgmEnabled ? userBgmVol : 0, sharedAudioCtx.currentTime);
+          bgmMediaSource.connect(bgmGainNode);
+          bgmGainNode.connect(sharedAudioCtx.destination);
+        }
+      } catch (e) {
+        bgmGainNode = null;
+      }
+      return sharedAudioCtx;
+    }
+
+    function applyBgmGain(targetVol, rampSec = 0.25) {
+      const safeVol = bgmEnabled ? clamp01(targetVol) : 0;
+      if (bgmGainNode && sharedAudioCtx) {
+        const now = sharedAudioCtx.currentTime;
+        bgmGainNode.gain.cancelScheduledValues(now);
+        bgmGainNode.gain.setValueAtTime(bgmGainNode.gain.value, now);
+        bgmGainNode.gain.linearRampToValueAtTime(safeVol, now + rampSec);
+      } else {
+        try {
+          bgmPlayer.volume = safeVol;
+        } catch (e) {}
+      }
+    }
+
+    function setBgmDucking(duck) {
+      isDucking = duck;
+      if (duckSafetyTimer) {
+        clearTimeout(duckSafetyTimer);
+        duckSafetyTimer = null;
+      }
+      const target = duck ? userBgmVol * 0.28 : userBgmVol;
+      applyBgmGain(target, 0.28);
+    }
+
     function formatTitleFromFilename(path) {
       const base = String(path).split("/").pop() || "背景音樂";
       return decodeURIComponent(base).replace(/\.[^/.]+$/, "");
@@ -1155,10 +2086,7 @@
       return rawList
         .map((item) => {
           if (typeof item === "string" && item.trim()) {
-            return {
-              title: formatTitleFromFilename(item),
-              url: normalizeTrackUrl(item)
-            };
+            return { title: formatTitleFromFilename(item), url: normalizeTrackUrl(item) };
           }
           if (item && typeof item === "object" && (item.file || item.url)) {
             const rawPath = item.file || item.url;
@@ -1173,7 +2101,6 @@
     }
 
     async function loadMusicPlaylist() {
-      // 1. 優先讀取 music/playlist.json（最穩定、無 API 次數上限）
       try {
         const res = await fetch(`./music/playlist.json?t=${Date.now()}`);
         if (res.ok) {
@@ -1186,11 +2113,8 @@
             return;
           }
         }
-      } catch (e) {
-        // 找不到或格式無效時自動改試備援方案
-      }
+      } catch (e) {}
 
-      // 2. 備援：自動掃描 GitHub 儲存庫的 music/ 資料夾內所有音檔
       try {
         const res = await fetch(GITHUB_MUSIC_API);
         if (res.ok) {
@@ -1205,17 +2129,16 @@
               }));
           }
         }
-      } catch (e) {
-        console.warn("無法自動掃描 music/ 資料夾：", e);
-      }
+      } catch (e) {}
 
       updateAudioControlsUI();
     }
-
     const playlistLoadPromise = loadMusicPlaylist();
 
     function updateAudioControlsUI() {
-      // 同步更新首頁與運動畫面的所有聲音按鈕
+      const voicePct = Math.round(userVoiceVol * 100);
+      const bgmPct = Math.round(userBgmVol * 100);
+
       document.querySelectorAll("[data-voice-toggle]").forEach((btn) => {
         btn.textContent = voiceEnabled ? "🔊 引導語音：開啟" : "🔇 引導語音：靜音";
         btn.classList.toggle("on", voiceEnabled);
@@ -1228,12 +2151,29 @@
         btn.classList.toggle("off", !bgmEnabled);
       });
 
+      document.querySelectorAll("[data-voice-slider]").forEach((s) => {
+        s.value = voiceEnabled ? voicePct : 0;
+      });
+      document.querySelectorAll("[data-voice-pct]").forEach((el) => {
+        el.textContent = `${voiceEnabled ? voicePct : 0}%`;
+      });
+
+      document.querySelectorAll("[data-bgm-slider]").forEach((s) => {
+        s.value = bgmEnabled ? bgmPct : 0;
+      });
+      document.querySelectorAll("[data-bgm-pct]").forEach((el) => {
+        el.textContent = `${bgmEnabled ? bgmPct : 0}%`;
+      });
+
+      document.querySelectorAll("[data-voice-mode]").forEach((btn) => {
+        btn.textContent = voiceMode === "taiwanese" ? "🗣️ 語音：台語音檔(自動備援)" : "🗣️ 語音：國語合成";
+      });
+
       const hasTracks = bgmPlaylist.length > 0;
       const currentTrack = hasTracks ? bgmPlaylist[currentTrackIdx] : null;
-
       let statusMsg = "";
       if (!hasTracks) {
-        statusMsg = "🎵 尚未偵測到音樂檔（請將 MP3 放入 music/ 資料夾）";
+        statusMsg = "🎵 尚未偵測到音樂檔（請將 MP3 放入 music/）";
       } else if (!bgmEnabled) {
         statusMsg = `🔇 背景音樂已靜音（歌單共 ${bgmPlaylist.length} 首）`;
       } else if (isWorkoutActive && !isPaused) {
@@ -1245,14 +2185,122 @@
       document.querySelectorAll("[data-bgm-status]").forEach((el) => {
         el.textContent = statusMsg;
       });
-
       document.querySelectorAll("[data-bgm-next]").forEach((btn) => {
         btn.disabled = bgmPlaylist.length <= 1;
       });
     }
 
+    function onVoiceSliderInput(val) {
+      const pct = parseInt(val, 10);
+      if (pct <= 0) {
+        voiceEnabled = false;
+        userVoiceVol = 0;
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        voiceFilePlayer.pause();
+        setBgmDucking(false);
+      } else {
+        voiceEnabled = true;
+        userVoiceVol = clamp01(pct / 100);
+      }
+      localStorage.setItem("usr_voice_enabled", String(voiceEnabled));
+      localStorage.setItem("usr_voice_vol", String(userVoiceVol));
+      updateAudioControlsUI();
+    }
+
+    function stepVoiceVolume(deltaPct) {
+      vibrateTap();
+      const basePct = voiceEnabled ? Math.round(userVoiceVol * 100) : 0;
+      const nextPct = Math.min(100, Math.max(0, basePct + deltaPct));
+      onVoiceSliderInput(nextPct);
+      previewVoiceVolume();
+    }
+
+    function previewVoiceVolume() {
+      if (!voiceEnabled) return;
+      initAudioContext();
+      if (isWorkoutActive) {
+        playRhythmTone(true);
+      } else {
+        speakText(`目前的語音音量為百分之${Math.round(userVoiceVol * 100)}`);
+      }
+    }
+
+    function onBgmSliderInput(val) {
+      const pct = parseInt(val, 10);
+      initAudioContext();
+      if (pct <= 0) {
+        bgmEnabled = false;
+        userBgmVol = 0;
+        pauseBgm();
+      } else {
+        bgmEnabled = true;
+        userBgmVol = clamp01(pct / 100);
+        applyBgmGain(isDucking ? userBgmVol * 0.28 : userBgmVol, 0.1);
+        if (isWorkoutActive && !isPaused && bgmPlayer.paused) {
+          playBgmCurrentTrack(false);
+        }
+      }
+      localStorage.setItem("usr_bgm_enabled", String(bgmEnabled));
+      localStorage.setItem("usr_bgm_vol", String(userBgmVol));
+      updateAudioControlsUI();
+    }
+
+    function stepBgmVolume(deltaPct) {
+      vibrateTap();
+      const basePct = bgmEnabled ? Math.round(userBgmVol * 100) : 0;
+      const nextPct = Math.min(100, Math.max(0, basePct + deltaPct));
+      onBgmSliderInput(nextPct);
+    }
+
+    function toggleVoice() {
+      vibrateTap();
+      voiceEnabled = !voiceEnabled;
+      if (voiceEnabled && userVoiceVol === 0) {
+        userVoiceVol = 0.8;
+        localStorage.setItem("usr_voice_vol", "0.8");
+      }
+      localStorage.setItem("usr_voice_enabled", String(voiceEnabled));
+      if (voiceEnabled) {
+        initAudioContext();
+      } else {
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        voiceFilePlayer.pause();
+        setBgmDucking(false);
+      }
+      updateAudioControlsUI();
+    }
+
+    function toggleBgm() {
+      vibrateTap();
+      bgmEnabled = !bgmEnabled;
+      if (bgmEnabled && userBgmVol === 0) {
+        userBgmVol = 0.35;
+        localStorage.setItem("usr_bgm_vol", "0.35");
+      }
+      localStorage.setItem("usr_bgm_enabled", String(bgmEnabled));
+      if (bgmEnabled) {
+        initAudioContext();
+        applyBgmGain(isDucking ? userBgmVol * 0.28 : userBgmVol, 0.2);
+        if (isWorkoutActive && !isPaused) {
+          playBgmCurrentTrack(false);
+        }
+      } else {
+        pauseBgm();
+      }
+      updateAudioControlsUI();
+    }
+
+    function toggleVoiceMode() {
+      vibrateTap();
+      voiceMode = voiceMode === "tts" ? "taiwanese" : "tts";
+      localStorage.setItem("usr_voice_mode", voiceMode);
+      updateAudioControlsUI();
+      speakText(voiceMode === "taiwanese" ? "已切換為台語音檔模式，若尚未放入音檔將自動使用國語引導" : "已切換為國語合成語音");
+    }
+
     async function playBgmCurrentTrack(forceReload = false) {
       if (!bgmEnabled) return;
+      initAudioContext();
       await playlistLoadPromise;
       if (bgmPlaylist.length === 0) {
         updateAudioControlsUI();
@@ -1265,37 +2313,33 @@
         bgmLoadedSourceSrc = track.url;
       }
 
+      applyBgmGain(isDucking ? userBgmVol * 0.28 : userBgmVol, 0.35);
       try {
         await bgmPlayer.play();
         bgmConsecutiveErrors = 0;
-      } catch (err) {
-        console.warn("背景音樂播放受限或載入中：", err);
-      }
+      } catch (err) {}
       updateAudioControlsUI();
     }
 
     function pauseBgm() {
-      if (!bgmPlayer.paused) {
-        bgmPlayer.pause();
-      }
+      applyBgmGain(0, 0.15);
+      if (!bgmPlayer.paused) bgmPlayer.pause();
       updateAudioControlsUI();
     }
 
     function nextTrack() {
+      vibrateTap();
       if (bgmPlaylist.length === 0) return;
       currentTrackIdx = (currentTrackIdx + 1) % bgmPlaylist.length;
       bgmConsecutiveErrors = 0;
-
       if (isWorkoutActive && !isPaused && bgmEnabled) {
         playBgmCurrentTrack(true);
       } else {
-        // 尚未開始運動時，僅切換待播曲目
         bgmLoadedSourceSrc = "";
         updateAudioControlsUI();
       }
     }
 
-    // 播完一首自動接續下一首，無限循環
     bgmPlayer.addEventListener("ended", () => {
       if (!bgmEnabled || !isWorkoutActive || isPaused || bgmPlaylist.length === 0) return;
       if (bgmPlaylist.length === 1) {
@@ -1307,74 +2351,24 @@
       }
     });
 
-    // 若單一音檔讀取失敗，自動嘗試下一首（避免無限跳錯）
     bgmPlayer.addEventListener("error", () => {
       if (bgmPlaylist.length === 0 || !isWorkoutActive || !bgmEnabled) return;
       bgmConsecutiveErrors++;
       if (bgmConsecutiveErrors < bgmPlaylist.length) {
         currentTrackIdx = (currentTrackIdx + 1) % bgmPlaylist.length;
         playBgmCurrentTrack(true);
-      } else {
-        document.querySelectorAll("[data-bgm-status]").forEach((el) => {
-          el.textContent = "⚠️ 音樂檔無法載入，請確認 music/ 路徑與檔名";
-        });
       }
     });
 
-    function toggleVoice() {
-      voiceEnabled = !voiceEnabled;
-      localStorage.setItem("usr_voice_enabled", String(voiceEnabled));
-      if (voiceEnabled) {
-        initAudioContext();
-      } else {
-        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-        bgmPlayer.volume = BGM_VOLUME_NORMAL;
-      }
-      updateAudioControlsUI();
-    }
-
-    function toggleBgm() {
-      bgmEnabled = !bgmEnabled;
-      localStorage.setItem("usr_bgm_enabled", String(bgmEnabled));
-      if (bgmEnabled) {
-        if (isWorkoutActive && !isPaused) {
-          playBgmCurrentTrack(false);
-        }
-      } else {
-        pauseBgm();
-      }
-      updateAudioControlsUI();
-    }
-
-    // 初始同步按鈕外觀
     updateAudioControlsUI();
 
     /* =========================================
-       6. 單例 AudioContext & 跨裝置 Web Speech API（含語音閃避混音）
+       7. 語音引導（防卡死＋台語音檔備援）與 2 秒強弱節拍音
        ========================================= */
-    function initAudioContext() {
-      if (!voiceEnabled) return null;
-      try {
-        if (!sharedAudioCtx) {
-          const AudioCtx = window.AudioContext || window.webkitAudioContext;
-          if (AudioCtx) {
-            sharedAudioCtx = new AudioCtx();
-          }
-        }
-        if (sharedAudioCtx && sharedAudioCtx.state === "suspended") {
-          sharedAudioCtx.resume().catch(() => {});
-        }
-      } catch (e) {
-        return null;
-      }
-      return sharedAudioCtx;
-    }
-
     function loadZhTwVoice() {
       if (!("speechSynthesis" in window)) return;
       const voices = window.speechSynthesis.getVoices();
       if (!voices || voices.length === 0) return;
-
       zhTwVoice =
         voices.find((v) => v.lang === "zh-TW") ||
         voices.find((v) => v.lang.toLowerCase().includes("zh-tw")) ||
@@ -1397,86 +2391,159 @@
       } catch (e) {}
     }
 
-    function speakText(text) {
-      if (!voiceEnabled || !("speechSynthesis" in window)) return;
+    function speakText(text, audioKey = null) {
+      if (!voiceEnabled || userVoiceVol <= 0) return;
+
+      // 若選擇台語預錄模式且有指定音檔代碼，優先嘗試播放 voice/{audioKey}.mp3
+      if (voiceMode === "taiwanese" && audioKey) {
+        voiceFilePlayer.pause();
+        voiceFilePlayer.src = `./voice/${encodeURIComponent(audioKey)}.mp3`;
+        voiceFilePlayer.volume = userVoiceVol;
+        voiceFilePlayer.onplay = () => setBgmDucking(true);
+        voiceFilePlayer.onended = () => setBgmDucking(false);
+        voiceFilePlayer.onerror = () => {
+          setBgmDucking(false);
+          speakWithTTS(text); // 尚未放入音檔時自動無縫降級國語合成
+        };
+        voiceFilePlayer.play().catch(() => {
+          speakWithTTS(text);
+        });
+        return;
+      }
+
+      speakWithTTS(text);
+    }
+
+    function speakWithTTS(text) {
+      if (!voiceEnabled || userVoiceVol <= 0 || !("speechSynthesis" in window)) return;
       try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
         window.speechSynthesis.cancel();
+
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.lang = "zh-TW";
         if (zhTwVoice) utterance.voice = zhTwVoice;
-        utterance.rate = 0.92;
+        utterance.rate = speechRate;
         utterance.pitch = 1.05;
+        utterance.volume = userVoiceVol;
 
-        // 語音閃避（Audio Ducking）：引導說話時自動壓低背景音樂
         utterance.onstart = () => {
-          if (bgmEnabled) bgmPlayer.volume = BGM_VOLUME_DUCKED;
+          if (bgmEnabled) {
+            setBgmDucking(true);
+            // 安全保護：防止部分行動瀏覽器未觸發 onend 導致背景音樂永久變小
+            const estMs = Math.max(3500, text.length * 420);
+            duckSafetyTimer = setTimeout(() => setBgmDucking(false), estMs);
+          }
         };
-        const restoreVolume = () => {
-          bgmPlayer.volume = BGM_VOLUME_NORMAL;
-        };
-        utterance.onend = restoreVolume;
-        utterance.onerror = restoreVolume;
+
+        const restore = () => setBgmDucking(false);
+        utterance.onend = restore;
+        utterance.onerror = restore;
 
         window.speechSynthesis.speak(utterance);
       } catch (e) {
-        bgmPlayer.volume = BGM_VOLUME_NORMAL;
+        setBgmDucking(false);
       }
     }
 
-    function playSoftBeep() {
-      // 若使用者關閉「引導語音」，同步靜音節拍提示音，只保留純音樂或全靜音
-      if (!voiceEnabled) return;
+    // 2 秒同步強弱節拍音（吸氣強拍 560Hz／吐氣弱拍 420Hz）
+    function playRhythmTone(isAccent = true) {
+      if (!voiceEnabled || userVoiceVol <= 0) return;
       const ctx = initAudioContext();
       if (!ctx) return;
       try {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = "sine";
-        osc.frequency.setValueAtTime(520, ctx.currentTime);
-        gain.gain.setValueAtTime(0.04, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.12);
+        osc.frequency.setValueAtTime(isAccent ? 560 : 420, ctx.currentTime);
+        const peak = (isAccent ? 0.055 : 0.032) * userVoiceVol;
+        gain.gain.setValueAtTime(Math.max(0.001, peak), ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.14);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.12);
+        osc.stop(ctx.currentTime + 0.14);
       } catch (e) {}
     }
 
     function repeatVoice() {
+      vibrateTap();
       if (!currentRoutine || !isWorkoutActive) return;
       if (!voiceEnabled) {
-        alert("目前「引導語音」已靜音，請先點上方按鈕開啟語音喔！");
+        alert("目前「引導語音」已靜音，請先開啟語音喔！");
         return;
       }
       initAudioContext();
-      const step = currentRoutine.steps[currentStepIdx];
-      speakText(`${step.title}。${step.instruction}`);
+      if (currentPhase === "exercise") {
+        const step = currentRoutine.steps[currentStepIdx];
+        speakText(`${step.title}。${step.instruction}`, step.audioKey);
+      } else if (currentPhase === "prep") {
+        speakText("請先坐穩或扶好椅背，準備開始運動！");
+      } else if (currentPhase === "rest") {
+        const nextStep = currentRoutine.steps[currentStepIdx + 1];
+        speakText(`休息一下，下一個動作是：${nextStep.title}`);
+      }
     }
 
     /* =========================================
-       7. 運動計時狀態機、暫停控制與防誤觸確認
+       8. 螢幕恆亮 (Wake Lock) 與抗漂移運動狀態機
        ========================================= */
-    function clearAllTimers() {
-      if (timerInterval) {
-        clearInterval(timerInterval);
-        timerInterval = null;
+    async function requestWakeLock() {
+      if (!("wakeLock" in navigator)) return;
+      try {
+        wakeLockSentinel = await navigator.wakeLock.request("screen");
+        document.getElementById("wakeLockBadge").classList.remove("hidden");
+        wakeLockSentinel.addEventListener("release", () => {
+          document.getElementById("wakeLockBadge").classList.add("hidden");
+        });
+      } catch (e) {}
+    }
+
+    async function releaseWakeLock() {
+      if (wakeLockSentinel) {
+        try {
+          await wakeLockSentinel.release();
+        } catch (e) {}
+        wakeLockSentinel = null;
       }
-      if (carouselInterval) {
-        clearInterval(carouselInterval);
-        carouselInterval = null;
+      document.getElementById("wakeLockBadge").classList.add("hidden");
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible" && isWorkoutActive && !isPaused) {
+        requestWakeLock();
+      }
+    });
+
+    function clearTickTimer() {
+      if (tickInterval) {
+        clearInterval(tickInterval);
+        tickInterval = null;
       }
     }
 
+    function computeTotalRoutineSec(routine) {
+      let total = routine.prepSec || 0;
+      routine.steps.forEach((s, idx) => {
+        total += s.duration;
+        if (idx < routine.steps.length - 1) total += routine.restSec || 0;
+      });
+      return Math.max(1, total);
+    }
+
     function startWorkout(modeKey) {
+      vibrateTap(30);
       initAudioContext();
       prewarmSpeech();
+      clearTickTimer();
 
-      clearAllTimers();
       currentModeKey = modeKey;
       currentRoutine = ROUTINES[modeKey];
       currentStepIdx = 0;
-      elapsedRoutineSec = 0;
-      totalRoutineSec = currentRoutine.steps.reduce((sum, s) => sum + s.duration, 0);
+      completedPhaseSec = 0;
+      totalRoutineSec = computeTotalRoutineSec(currentRoutine);
       badgePublished = false;
       isWorkoutActive = true;
       isPaused = false;
@@ -1486,109 +2553,209 @@
       btnPublish.textContent = "📢 一鍵發布到雲端動態牆";
 
       updatePauseUI();
+      document.getElementById("mainContainer").classList.add("workout-wide");
       document.getElementById("socialPausedBanner").classList.add("hidden");
       document.getElementById("viewSelect").classList.add("hidden");
       document.getElementById("viewComplete").classList.add("hidden");
       document.getElementById("viewActive").classList.remove("hidden");
 
-      // 在使用者點擊按鈕當下啟動背景音樂（符合手機瀏覽器播放限制）
+      requestWakeLock();
       if (bgmEnabled) {
         playBgmCurrentTrack(false);
       } else {
         updateAudioControlsUI();
       }
 
-      loadStep(0);
+      enterPrepPhase();
 
-      timerInterval = setInterval(() => {
-        if (isPaused || !isWorkoutActive) return;
-
-        remainingSec--;
-        elapsedRoutineSec++;
-        updateTimerUI();
-        playSoftBeep();
-
-        const step = currentRoutine.steps[currentStepIdx];
-        if (remainingSec === 10 && step.duration > 10) {
-          speakText("阿公阿嬤很棒喔，剩下十秒鐘，加油！");
-        }
-
-        if (remainingSec <= 0) {
-          if (currentStepIdx + 1 < currentRoutine.steps.length) {
-            loadStep(currentStepIdx + 1);
-          } else {
-            finishWorkout();
-          }
-        }
-      }, 1000);
+      // 每 250ms 以真實時間戳校準，杜絕長時間計時漂移
+      tickInterval = setInterval(onTimerTick, 250);
     }
 
-    function loadStep(idx) {
+    function enterPrepPhase() {
+      currentPhase = "prep";
+      const prepSec = currentRoutine.prepSec || 5;
+      phaseDurationMs = prepSec * 1000;
+      phaseRemainingMs = phaseDurationMs;
+      phaseEndTimestamp = Date.now() + phaseDurationMs;
+      lastDisplayedSec = -1;
+      lastBeatIdx = -1;
+
+      const firstStep = currentRoutine.steps[0];
+      const badgeEl = document.getElementById("stepCounter");
+      badgeEl.textContent = "⏳ 預備倒數";
+      badgeEl.className = "step-indicator phase-prep";
+
+      document.getElementById("exerciseTitle").textContent = `即將開始：${firstStep.title}`;
+      document.getElementById("poseFrameLabel").textContent = "請先坐穩或扶好椅背";
+      document.getElementById("svgStage").innerHTML = POSE_SVGS[firstStep.frames[0].svgKey] || "";
+      document.getElementById("instructionText").textContent = "請調整好呼吸與姿勢，倒數結束後就跟著圖示一起動！";
+
+      setBreathVisual("inhale", "深呼吸預備");
+      updateTimerDisplay(prepSec);
+      speakText(`準備開始${currentRoutine.name}，請先坐穩或扶好椅背。`);
+    }
+
+    function enterExercisePhase(idx) {
+      currentPhase = "exercise";
       currentStepIdx = idx;
       const step = currentRoutine.steps[idx];
-      remainingSec = step.duration;
-      frameIndex = 0;
 
-      document.getElementById("stepCounter").textContent = `動作 ${idx + 1} / ${currentRoutine.steps.length}`;
+      phaseDurationMs = step.duration * 1000;
+      phaseRemainingMs = phaseDurationMs;
+      phaseEndTimestamp = Date.now() + phaseDurationMs;
+      lastDisplayedSec = -1;
+      lastBeatIdx = 0;
+      tenSecWarned = false;
+
+      const badgeEl = document.getElementById("stepCounter");
+      badgeEl.textContent = `動作 ${idx + 1} / ${currentRoutine.steps.length}`;
+      badgeEl.className = "step-indicator";
+
       document.getElementById("exerciseTitle").textContent = step.title;
       document.getElementById("instructionText").textContent = step.instruction;
 
-      updateTimerUI();
-      renderCarouselFrame();
-      speakText(`${step.title}。${step.instruction}`);
-
-      if (carouselInterval) clearInterval(carouselInterval);
-      carouselInterval = setInterval(() => {
-        if (isPaused || !isWorkoutActive) return;
-        frameIndex = (frameIndex + 1) % step.frames.length;
-        renderCarouselFrame();
-      }, 1500);
+      renderExerciseFrame(step, 0);
+      updateTimerDisplay(step.duration);
+      playRhythmTone(true);
+      speakText(`${step.title}。${step.instruction}`, step.audioKey);
     }
 
-    function renderCarouselFrame() {
-      const step = currentRoutine.steps[currentStepIdx];
-      const frame = step.frames[frameIndex];
+    function enterRestPhase(nextIdx) {
+      currentPhase = "rest";
+      const restSec = currentRoutine.restSec || 10;
+      const nextStep = currentRoutine.steps[nextIdx];
+
+      phaseDurationMs = restSec * 1000;
+      phaseRemainingMs = phaseDurationMs;
+      phaseEndTimestamp = Date.now() + phaseDurationMs;
+      lastDisplayedSec = -1;
+      lastBeatIdx = -1;
+
+      const badgeEl = document.getElementById("stepCounter");
+      badgeEl.textContent = `☕ 組間喘息（下組：動作 ${nextIdx + 1}）`;
+      badgeEl.className = "step-indicator phase-rest";
+
+      document.getElementById("exerciseTitle").textContent = `下一個動作：${nextStep.title}`;
+      document.getElementById("poseFrameLabel").textContent = "放鬆肩膀・慢慢深呼吸";
+      document.getElementById("svgStage").innerHTML = POSE_SVGS.restRelax;
+      document.getElementById("instructionText").textContent = `休息 ${restSec} 秒喘口氣，接下來要做「${nextStep.title}」。`;
+
+      setBreathVisual("exhale", "放鬆休息");
+      updateTimerDisplay(restSec);
+      speakText(`做得很好！休息一下，下一個動作是${nextStep.title}`);
+    }
+
+    function renderExerciseFrame(step, frameIdx) {
+      const frame = step.frames[frameIdx % step.frames.length];
       document.getElementById("poseFrameLabel").textContent = frame.label;
-      document.getElementById("svgStage").innerHTML = frame.svg;
+      document.getElementById("svgStage").innerHTML = POSE_SVGS[frame.svgKey] || "";
+      setBreathVisual(frameIdx % 2 === 0 ? "inhale" : "exhale", frame.breath || (frameIdx % 2 === 0 ? "吸氣預備" : "慢慢吐氣"));
     }
 
-    function updateTimerUI() {
-      const safeSec = Math.max(0, remainingSec);
+    function setBreathVisual(mode, text) {
+      const pill = document.getElementById("breathPill");
+      pill.classList.toggle("inhale", mode === "inhale");
+      pill.classList.toggle("exhale", mode === "exhale");
+      document.getElementById("breathText").textContent = text;
+    }
+
+    function onTimerTick() {
+      if (isPaused || !isWorkoutActive) return;
+
+      const now = Date.now();
+      phaseRemainingMs = Math.max(0, phaseEndTimestamp - now);
+      const secLeft = Math.ceil(phaseRemainingMs / 1000);
+      const elapsedPhaseMs = phaseDurationMs - phaseRemainingMs;
+
+      if (secLeft !== lastDisplayedSec) {
+        lastDisplayedSec = secLeft;
+        updateTimerDisplay(secLeft);
+
+        // 預備倒數最後 3 秒給予輕聲提示
+        if (currentPhase === "prep" && secLeft > 0 && secLeft <= 3) {
+          playRhythmTone(true);
+        }
+
+        // 正式運動剩餘 10 秒鼓勵
+        if (currentPhase === "exercise" && secLeft === 10 && !tenSecWarned && phaseDurationMs > 12000) {
+          tenSecWarned = true;
+          speakText("阿公阿嬤很棒喔，剩下十秒鐘，加油！");
+        }
+      }
+
+      // 正式運動中：嚴格每 2000ms 同步切換圖片、呼吸光環與強弱拍提示音
+      if (currentPhase === "exercise") {
+        const beatIdx = Math.floor(elapsedPhaseMs / 2000);
+        if (beatIdx !== lastBeatIdx) {
+          lastBeatIdx = beatIdx;
+          const step = currentRoutine.steps[currentStepIdx];
+          renderExerciseFrame(step, beatIdx % step.frames.length);
+          playRhythmTone(beatIdx % 2 === 0);
+        }
+      }
+
+      // 階段結束轉換
+      if (phaseRemainingMs <= 0) {
+        completedPhaseSec += phaseDurationMs / 1000;
+        if (currentPhase === "prep") {
+          enterExercisePhase(0);
+        } else if (currentPhase === "exercise") {
+          if (currentStepIdx + 1 < currentRoutine.steps.length) {
+            if ((currentRoutine.restSec || 0) > 0) {
+              enterRestPhase(currentStepIdx + 1);
+            } else {
+              enterExercisePhase(currentStepIdx + 1);
+            }
+          } else {
+            finishWorkout();
+          }
+        } else if (currentPhase === "rest") {
+          enterExercisePhase(currentStepIdx + 1);
+        }
+      }
+    }
+
+    function updateTimerDisplay(secLeft) {
+      const safeSec = Math.max(0, secLeft);
       const mins = String(Math.floor(safeSec / 60)).padStart(2, "0");
       const secs = String(safeSec % 60).padStart(2, "0");
-      document.getElementById("timerText").textContent = `${mins}:${secs}`;
+      const timerEl = document.getElementById("timerText");
+      timerEl.textContent = `${mins}:${secs}`;
+      timerEl.className = `timer-display ${isPaused ? "paused" : ""} ${currentPhase === "prep" ? "phase-prep" : ""} ${currentPhase === "rest" ? "phase-rest" : ""}`;
 
-      const pct = Math.min(100, Math.round((elapsedRoutineSec / totalRoutineSec) * 100));
+      const elapsedNow = completedPhaseSec + (phaseDurationMs - phaseRemainingMs) / 1000;
+      const pct = Math.min(100, Math.round((elapsedNow / totalRoutineSec) * 100));
       document.getElementById("progressBar").style.width = `${pct}%`;
     }
 
     function updatePauseUI() {
       const btn = document.getElementById("btnPauseResume");
       const banner = document.getElementById("pausedBanner");
-      const timerEl = document.getElementById("timerText");
-
       if (isPaused) {
         btn.textContent = "▶ 繼續運動";
         btn.classList.remove("btn-warning");
         btn.classList.add("btn-success");
         banner.classList.remove("hidden");
-        timerEl.classList.add("paused");
       } else {
         btn.textContent = "⏸ 暫停運動";
         btn.classList.remove("btn-success");
         btn.classList.add("btn-warning");
         banner.classList.add("hidden");
-        timerEl.classList.remove("paused");
       }
     }
 
     function pauseWorkout(fromTabSwitch = false) {
       if (!isWorkoutActive || isPaused) return;
       isPaused = true;
+      phaseRemainingMs = Math.max(0, phaseEndTimestamp - Date.now());
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-      bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      voiceFilePlayer.pause();
+      setBgmDucking(false);
       pauseBgm();
+      releaseWakeLock();
       updatePauseUI();
+      updateTimerDisplay(Math.ceil(phaseRemainingMs / 1000));
       if (fromTabSwitch) {
         document.getElementById("socialPausedBanner").classList.remove("hidden");
       }
@@ -1598,24 +2765,23 @@
       if (!isWorkoutActive || !isPaused) return;
       initAudioContext();
       isPaused = false;
+      phaseEndTimestamp = Date.now() + phaseRemainingMs;
+      requestWakeLock();
       updatePauseUI();
       document.getElementById("socialPausedBanner").classList.add("hidden");
-      if (bgmEnabled) {
-        playBgmCurrentTrack(false);
-      }
+      if (bgmEnabled) playBgmCurrentTrack(false);
       speakText("繼續運動，加油！");
     }
 
     function togglePause() {
+      vibrateTap();
       if (!isWorkoutActive) return;
-      if (isPaused) {
-        resumeWorkout();
-      } else {
-        pauseWorkout(false);
-      }
+      if (isPaused) resumeWorkout();
+      else pauseWorkout(false);
     }
 
     function requestStopWorkout() {
+      vibrateTap();
       if (!isWorkoutActive) return;
       wasPausedBeforeModal = isPaused;
       pauseWorkout(false);
@@ -1623,30 +2789,36 @@
     }
 
     function cancelStopWorkout() {
+      vibrateTap();
       document.getElementById("confirmStopModal").classList.add("hidden");
-      if (!wasPausedBeforeModal) {
-        resumeWorkout();
-      }
+      if (!wasPausedBeforeModal) resumeWorkout();
     }
 
     function confirmStopWorkout() {
+      vibrateTap(30);
       document.getElementById("confirmStopModal").classList.add("hidden");
-      clearAllTimers();
+      clearTickTimer();
       isWorkoutActive = false;
       isPaused = false;
+      currentPhase = "idle";
       if ("speechSynthesis" in window) window.speechSynthesis.cancel();
-      bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      voiceFilePlayer.pause();
+      setBgmDucking(false);
       pauseBgm();
+      releaseWakeLock();
       document.getElementById("socialPausedBanner").classList.add("hidden");
       resetToHome();
     }
 
     function finishWorkout() {
-      clearAllTimers();
+      clearTickTimer();
       isWorkoutActive = false;
       isPaused = false;
-      bgmPlayer.volume = BGM_VOLUME_NORMAL;
+      currentPhase = "idle";
+      setBgmDucking(false);
       pauseBgm();
+      releaseWakeLock();
+      document.getElementById("mainContainer").classList.remove("workout-wide");
       document.getElementById("socialPausedBanner").classList.add("hidden");
 
       const todayStr = getLocalDateStr(0);
@@ -1654,94 +2826,125 @@
       const todayDisplayStr = new Date().toLocaleDateString("zh-TW");
       const statusEl = document.getElementById("completeStatusText");
 
+      const rec = readLocalRecord();
       let badgeStreakDays = 1;
+      const earnedMinutes = currentRoutine.minutes || 0;
 
       if (currentModeKey === "demo") {
-        const { days } = readStoredStreak();
-        badgeStreakDays = Math.max(days, 1);
-        statusEl.textContent = "展示體驗模式完成！此模式僅供流程展示，不會更動您本機的真實每日簽到天數。";
+        badgeStreakDays = Math.max(rec.streakDays, 1);
+        statusEl.textContent = "展示體驗模式完成！此模式不會更動您本機的真實每日簽到天數與累計分鐘數。";
       } else {
-        const storedDays = parseInt(localStorage.getItem("usr_streak_days") || "0", 10);
-        const lastDate = localStorage.getItem("usr_last_checkin_date") || "";
+        const nextTotalMinutes = rec.totalMinutes + earnedMinutes;
+        const nextDates = Array.from(new Set([...rec.checkinDates, todayStr])).sort().slice(-60);
+        localStorage.setItem("usr_total_minutes", String(nextTotalMinutes));
+        localStorage.setItem("usr_checkin_dates", JSON.stringify(nextDates));
 
-        if (lastDate === todayStr) {
-          badgeStreakDays = Math.max(storedDays, 1);
-          statusEl.textContent = `今日已完成過簽到！維持連續運動 ${badgeStreakDays} 天紀錄，多動更健康！`;
-        } else if (lastDate === yesterdayStr) {
-          badgeStreakDays = Math.max(storedDays, 0) + 1;
+        if (rec.lastDate === todayStr) {
+          badgeStreakDays = Math.max(rec.rawStreakDays, 1);
+          statusEl.textContent = `今日已完成簽到！維持連續 ${badgeStreakDays} 天，累計運動增至 ${nextTotalMinutes} 分鐘！`;
+        } else if (rec.lastDate === yesterdayStr) {
+          badgeStreakDays = Math.max(rec.rawStreakDays, 0) + 1;
           localStorage.setItem("usr_streak_days", String(badgeStreakDays));
           localStorage.setItem("usr_last_checkin_date", todayStr);
-          statusEl.textContent = `太棒了！系統已自動簽到，累計連續運動 ${badgeStreakDays} 天！`;
+          statusEl.textContent = `太棒了！連續運動已達 ${badgeStreakDays} 天，累計運動 ${nextTotalMinutes} 分鐘！`;
         } else {
           badgeStreakDays = 1;
           localStorage.setItem("usr_streak_days", "1");
           localStorage.setItem("usr_last_checkin_date", todayStr);
-          statusEl.textContent = "已成功為您記錄今日簽到，正式開啟新的連續運動紀錄！";
+          statusEl.textContent = `已記錄今日簽到並累計 ${nextTotalMinutes} 分鐘，正式開啟新的連續運動紀錄！`;
         }
+        pushProfileToCloud();
       }
 
-      updateStreakBanner();
+      updateRecordUI();
+      highlightPresetChips();
 
       latestBadgeMeta = {
         streakDays: badgeStreakDays,
         routineName: currentRoutine.name,
         dateStr: todayDisplayStr,
-        isDemo: currentModeKey === "demo"
+        isDemo: currentModeKey === "demo",
+        minutes: earnedMinutes
       };
 
       document.getElementById("viewActive").classList.add("hidden");
       document.getElementById("viewComplete").classList.remove("hidden");
 
-      speakText(`太棒了！恭喜完成今天的運動，您已經連續運動 ${badgeStreakDays} 天了！`);
+      const tier = getBadgeTier(badgeStreakDays);
+      speakText(`太棒了！恭喜完成今天的運動，獲得${tier.label.replace(/★/g, "")}徽章，您已經連續運動 ${badgeStreakDays} 天了！`);
       drawAchievementBadge(latestBadgeMeta);
     }
 
     /* =========================================
-       8. HTML5 Canvas 繪製成就徽章 + 手機 Web Share 分享
+       9. 三階分級 Canvas 成就徽章 + 一鍵稱呼快選 + 分享
        ========================================= */
     function drawAchievementBadge({ streakDays, routineName, dateStr }) {
       const canvas = document.getElementById("badgeCanvas");
       const ctx = canvas.getContext("2d");
+      const tier = getBadgeTier(streakDays);
 
-      ctx.fillStyle = "#F8FAFC";
+      ctx.fillStyle = tier.bg;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      ctx.strokeStyle = "#0F172A";
+      ctx.strokeStyle = tier.border;
       ctx.lineWidth = 8;
       ctx.strokeRect(16, 16, canvas.width - 32, canvas.height - 32);
 
-      ctx.fillStyle = "#1D4ED8";
+      ctx.fillStyle = tier.header;
       ctx.fillRect(16, 16, canvas.width - 32, 64);
       ctx.fillStyle = "#FFFFFF";
       ctx.font = "bold 26px sans-serif";
       ctx.textAlign = "center";
       ctx.fillText("數位社會處方｜健康運動成就卡", canvas.width / 2, 57);
 
+      // 等級徽章標籤
+      ctx.fillStyle = tier.circleFill;
+      ctx.fillRect(canvas.width / 2 - 125, 96, 250, 36);
+      ctx.fillStyle = tier.numColor;
+      ctx.font = "bold 22px sans-serif";
+      ctx.fillText(tier.label, canvas.width / 2, 122);
+
+      // 中央大圓徽章
       ctx.beginPath();
-      ctx.arc(canvas.width / 2, 190, 78, 0, Math.PI * 2);
-      ctx.fillStyle = "#FEF3C7";
+      ctx.arc(canvas.width / 2, 224, 72, 0, Math.PI * 2);
+      ctx.fillStyle = tier.circleFill;
       ctx.fill();
       ctx.lineWidth = 6;
-      ctx.strokeStyle = "#B45309";
+      ctx.strokeStyle = tier.circleStroke;
       ctx.stroke();
 
-      ctx.fillStyle = "#78350F";
-      ctx.font = "900 64px sans-serif";
-      ctx.fillText(`${streakDays} 天`, canvas.width / 2, 212);
+      ctx.fillStyle = tier.numColor;
+      ctx.font = "900 58px sans-serif";
+      ctx.fillText(`${streakDays} 天`, canvas.width / 2, 244);
 
       ctx.fillStyle = "#0F172A";
-      ctx.font = "bold 30px sans-serif";
-      ctx.fillText(`連續運動 ${streakDays} 天達成！`, canvas.width / 2, 315);
+      ctx.font = "bold 28px sans-serif";
+      ctx.fillText(`連續運動 ${streakDays} 天達成！`, canvas.width / 2, 336);
 
       ctx.fillStyle = "#334155";
-      ctx.font = "bold 20px sans-serif";
-      ctx.fillText(`${routineName} ｜ ${dateStr}`, canvas.width / 2, 355);
+      ctx.font = "bold 19px sans-serif";
+      ctx.fillText(`${routineName} ｜ ${dateStr}`, canvas.width / 2, 376);
 
-      latestBadgeDataUrl = canvas.toDataURL("image/jpeg", 0.8);
+      latestBadgeDataUrl = canvas.toDataURL("image/jpeg", 0.82);
       document.getElementById("badgePreviewImg").src = latestBadgeDataUrl;
     }
 
+    function selectPresetName(name) {
+      vibrateTap();
+      document.getElementById("userNameInput").value = name;
+      localStorage.setItem("usr_display_name", name);
+      highlightPresetChips();
+    }
+
+    function highlightPresetChips() {
+      const val = document.getElementById("userNameInput").value.trim();
+      document.querySelectorAll(".preset-chip").forEach((chip) => {
+        chip.classList.toggle("selected", chip.textContent.includes(val) && val !== "");
+      });
+    }
+
     async function shareBadge() {
+      vibrateTap();
       const canvas = document.getElementById("badgeCanvas");
       const fileName = `健康成就徽章_連續${latestBadgeMeta.streakDays}天.png`;
 
@@ -1767,6 +2970,7 @@
     }
 
     function downloadBadge() {
+      vibrateTap();
       if (!latestBadgeDataUrl) return;
       const link = document.createElement("a");
       link.download = `健康成就徽章_連續${latestBadgeMeta.streakDays}天.jpg`;
@@ -1775,11 +2979,17 @@
     }
 
     /* =========================================
-       9. Firestore 雲端動態牆（輕量結構化資料）
+       10. Firestore 動態牆（分級徽章、篩選、分頁載入、唸給我聽）
        ========================================= */
     async function publishToWall() {
+      vibrateTap(30);
       if (badgePublished) {
         switchTab("social");
+        return;
+      }
+
+      if (!navigator.onLine) {
+        alert("目前處於離線狀態，請先連接網路後再發布到雲端動態牆喔！");
         return;
       }
 
@@ -1789,13 +2999,13 @@
 
       const rawName = document.getElementById("userNameInput").value.trim().slice(0, 15);
       const authorName = rawName || "長青運動員";
-      if (rawName) {
-        localStorage.setItem("usr_display_name", rawName);
-      }
+      if (rawName) localStorage.setItem("usr_display_name", rawName);
 
       try {
         await addDoc(postsCollection, {
           author: authorName,
+          clientId: deviceClientId,
+          syncCode: syncCode || "",
           routineName: latestBadgeMeta.routineName,
           streakDays: latestBadgeMeta.streakDays,
           dateStr: latestBadgeMeta.dateStr,
@@ -1807,6 +3017,9 @@
 
         badgePublished = true;
         btnPublish.textContent = "✅ 已發布至雲端動態牆";
+        if (latestBadgeMeta.isDemo && wallFilter === "official") {
+          setWallFilter("all");
+        }
         switchTab("social");
       } catch (err) {
         console.error("發布失敗：", err);
@@ -1823,11 +3036,7 @@
     function formatTimestamp(ts) {
       if (!ts || typeof ts.toDate !== "function") return "剛剛";
       const date = ts.toDate();
-      const month = date.getMonth() + 1;
-      const day = date.getDate();
-      const hours = String(date.getHours()).padStart(2, "0");
-      const mins = String(date.getMinutes()).padStart(2, "0");
-      return `${month}/${day} ${hours}:${mins}`;
+      return `${date.getMonth() + 1}/${date.getDate()} ${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}`;
     }
 
     function renderBadgeBlock(post) {
@@ -1836,13 +3045,15 @@
       }
 
       const days = Number.isFinite(Number(post.streakDays)) ? Number(post.streakDays) : 1;
+      const tier = getBadgeTier(days);
       const routine = escapeHtml(post.routineName || "每日健康運動");
       const dateStr = escapeHtml(post.dateStr || formatTimestamp(post.createdAt));
 
       return `
-        <div class="css-badge-card">
+        <div class="css-badge-card ${tier.cssClass}">
           <div class="css-badge-top">數位社會處方｜健康運動成就卡</div>
           <div class="css-badge-body">
+            <div class="css-badge-tier">${tier.label}</div>
             <div class="css-badge-circle">${days} 天</div>
             <div class="css-badge-title">連續運動 ${days} 天達成！</div>
             <div class="css-badge-meta">${routine} ｜ ${dateStr}</div>
@@ -1851,58 +3062,124 @@
       `;
     }
 
-    const postsQuery = query(postsCollection, orderBy("createdAt", "desc"), limit(30));
+    function setWallFilter(filterKey) {
+      vibrateTap();
+      wallFilter = filterKey;
+      document.getElementById("filterAll").classList.toggle("active", filterKey === "all");
+      document.getElementById("filterOfficial").classList.toggle("active", filterKey === "official");
+      document.getElementById("filterMine").classList.toggle("active", filterKey === "mine");
+      renderSocialWall();
+    }
+
+    function renderSocialWall() {
+      const container = document.getElementById("feedContainer");
+      container.innerHTML = "";
+      loadedPostsMap.clear();
+
+      // 合併即時前 15 筆＋手動載入的歷史貼文（去重）
+      const seen = new Set();
+      const combined = [];
+      for (const item of [...realtimePosts, ...extraOlderPosts]) {
+        if (!seen.has(item.id)) {
+          seen.add(item.id);
+          combined.push(item);
+          loadedPostsMap.set(item.id, item.data);
+        }
+      }
+
+      const myName = (localStorage.getItem("usr_display_name") || "").trim();
+      const filtered = combined.filter(({ data }) => {
+        if (wallFilter === "official") return !data.isDemo;
+        if (wallFilter === "mine") {
+          return (
+            data.clientId === deviceClientId ||
+            (syncCode && data.syncCode === syncCode) ||
+            (myName && data.author === myName)
+          );
+        }
+        return true;
+      });
+
+      document.getElementById("loadMoreWrapper").classList.toggle("hidden", !hasMorePosts);
+
+      if (filtered.length === 0) {
+        const emptyText =
+          wallFilter === "mine"
+            ? "您目前還沒有發布過運動紀錄喔！完成一次運動就能一鍵發布！"
+            : "目前這個分類還沒有動態喔！快去完成一次運動，搶先發布第一張成就卡吧！";
+        container.innerHTML = `<div class="card empty-wall">${emptyText}</div>`;
+        return;
+      }
+
+      filtered.forEach(({ id: postId, data: post }) => {
+        const reactions = post.reactions || { like: 0, clap: 0, heart: 0 };
+        const myReactions = userReactedMap[postId] || {};
+        const demoBadge = post.isDemo ? `<span class="demo-tag">展示體驗</span>` : "";
+
+        const card = document.createElement("div");
+        card.className = "post-card";
+        card.innerHTML = `
+          <div class="post-header">
+            <span class="post-author">${escapeHtml(post.author || "長青運動員")}${demoBadge}</span>
+            <div class="post-header-right">
+              <button class="read-aloud-btn" onclick="readPostAloud('${postId}')">🔊 唸給我聽</button>
+              <span class="post-time">${formatTimestamp(post.createdAt)}</span>
+            </div>
+          </div>
+          <p style="font-weight:700; margin-bottom:8px;">${escapeHtml(post.summary || "")}</p>
+          ${renderBadgeBlock(post)}
+          <div class="reaction-bar">
+            <button class="react-btn ${myReactions.like ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'like', this)">
+              👍 真讚 (${Math.max(0, reactions.like || 0)})
+            </button>
+            <button class="react-btn ${myReactions.clap ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'clap', this)">
+              👏 好棒 (${Math.max(0, reactions.clap || 0)})
+            </button>
+            <button class="react-btn ${myReactions.heart ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'heart', this)">
+              ❤️ 加油 (${Math.max(0, reactions.heart || 0)})
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // 動態牆「唸給我聽」
+    function readPostAloud(postId) {
+      vibrateTap();
+      const post = loadedPostsMap.get(postId);
+      if (!post) return;
+      const r = post.reactions || { like: 0, clap: 0, heart: 0 };
+      const totalCheers = Math.max(0, r.like || 0) + Math.max(0, r.clap || 0) + Math.max(0, r.heart || 0);
+      const author = post.author || "長青運動員";
+      const summary = post.summary || "完成了每日運動";
+      const prevVoiceState = voiceEnabled;
+      if (!voiceEnabled) {
+        // 使用者主動點唸給我聽時，單次以合理音量朗讀
+        voiceEnabled = true;
+        if (userVoiceVol <= 0) userVoiceVol = 0.85;
+      }
+      speakWithTTS(`${author}，${summary}。目前已經收到 ${totalCheers} 個親友的加油鼓勵！`);
+      voiceEnabled = prevVoiceState;
+    }
+
+    // 即時監聽最新 15 筆動態
+    const latestPostsQuery = query(postsCollection, orderBy("createdAt", "desc"), limit(WALL_PAGE_SIZE));
 
     onSnapshot(
-      postsQuery,
+      latestPostsQuery,
       (snapshot) => {
         const statusEl = document.getElementById("cloudStatus");
         statusEl.className = "cloud-status";
-        statusEl.textContent = `🟢 雲端即時連線中（目前共有 ${snapshot.size} 則健康動態）`;
+        statusEl.textContent = `🟢 雲端即時連線中（最新 ${snapshot.size} 則動態同步中）`;
 
-        const container = document.getElementById("feedContainer");
-        container.innerHTML = "";
-
-        if (snapshot.empty) {
-          container.innerHTML = `
-            <div class="card empty-wall">
-              目前雲端佈告欄還沒有動態喔！<br/>快去完成一次運動，搶先發布第一張成就卡吧！
-            </div>`;
-          return;
+        realtimePosts = snapshot.docs.map((d) => ({ id: d.id, data: d.data() }));
+        lastRealtimeDocSnap = snapshot.docs[snapshot.docs.length - 1] || null;
+        if (extraOlderPosts.length === 0) {
+          lastLoadedDocSnap = lastRealtimeDocSnap;
+          hasMorePosts = snapshot.size === WALL_PAGE_SIZE;
         }
-
-        snapshot.forEach((docSnap) => {
-          const post = docSnap.data();
-          const postId = docSnap.id;
-          const reactions = post.reactions || { like: 0, clap: 0, heart: 0 };
-          const myReactions = userReactedMap[postId] || {};
-
-          const card = document.createElement("div");
-          card.className = "post-card";
-
-          const demoBadge = post.isDemo ? `<span class="demo-tag">展示體驗</span>` : "";
-
-          card.innerHTML = `
-            <div class="post-header">
-              <span class="post-author">${escapeHtml(post.author || "長青運動員")}${demoBadge}</span>
-              <span class="post-time">${formatTimestamp(post.createdAt)}</span>
-            </div>
-            <p style="font-weight:700; margin-bottom:8px;">${escapeHtml(post.summary || "")}</p>
-            ${renderBadgeBlock(post)}
-            <div class="reaction-bar">
-              <button class="react-btn ${myReactions.like ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'like', this)">
-                👍 真讚 (${Math.max(0, reactions.like || 0)})
-              </button>
-              <button class="react-btn ${myReactions.clap ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'clap', this)">
-                👏 好棒 (${Math.max(0, reactions.clap || 0)})
-              </button>
-              <button class="react-btn ${myReactions.heart ? "reacted" : ""}" onclick="toggleReaction('${postId}', 'heart', this)">
-                ❤️ 加油 (${Math.max(0, reactions.heart || 0)})
-              </button>
-            </div>
-          `;
-          container.appendChild(card);
-        });
+        renderSocialWall();
       },
       (error) => {
         console.error("Firestore 監聽錯誤：", error);
@@ -1915,17 +3192,43 @@
       }
     );
 
+    async function loadMorePosts() {
+      vibrateTap();
+      if (!lastLoadedDocSnap) return;
+      const btn = document.getElementById("btnLoadMore");
+      btn.disabled = true;
+      btn.textContent = "⏳ 正在載入更多動態...";
+
+      try {
+        const nextQuery = query(
+          postsCollection,
+          orderBy("createdAt", "desc"),
+          startAfter(lastLoadedDocSnap),
+          limit(WALL_PAGE_SIZE)
+        );
+        const snap = await getDocs(nextQuery);
+        const newItems = snap.docs.map((d) => ({ id: d.id, data: d.data() }));
+        extraOlderPosts = [...extraOlderPosts, ...newItems];
+        lastLoadedDocSnap = snap.docs[snap.docs.length - 1] || lastLoadedDocSnap;
+        hasMorePosts = snap.size === WALL_PAGE_SIZE;
+        renderSocialWall();
+      } catch (err) {
+        alert("載入更多動態失敗，請稍後再試。");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "⬇️ 載入更多歷史動態";
+      }
+    }
+
     async function toggleReaction(postId, type, btnEl) {
+      vibrateTap();
       const lockKey = `${postId}_${type}`;
       if (pendingReactions.has(lockKey)) return;
 
       pendingReactions.add(lockKey);
       if (btnEl) btnEl.disabled = true;
 
-      if (!userReactedMap[postId]) {
-        userReactedMap[postId] = {};
-      }
-
+      if (!userReactedMap[postId]) userReactedMap[postId] = {};
       const alreadyReacted = !!userReactedMap[postId][type];
       const delta = alreadyReacted ? -1 : 1;
 
@@ -1934,18 +3237,27 @@
 
       if (!alreadyReacted) {
         initAudioContext();
-        playSoftBeep();
+        playRhythmTone(true);
+      }
+
+      // 若是歷史分頁貼文，同步更新本機快取數值
+      const olderHit = extraOlderPosts.find((p) => p.id === postId);
+      if (olderHit) {
+        if (!olderHit.data.reactions) olderHit.data.reactions = { like: 0, clap: 0, heart: 0 };
+        olderHit.data.reactions[type] = Math.max(0, (olderHit.data.reactions[type] || 0) + delta);
+        renderSocialWall();
       }
 
       try {
         const postRef = doc(db, "posts", postId);
-        await updateDoc(postRef, {
-          [`reactions.${type}`]: increment(delta)
-        });
+        await updateDoc(postRef, { [`reactions.${type}`]: increment(delta) });
       } catch (err) {
         userReactedMap[postId][type] = alreadyReacted;
         localStorage.setItem("usr_reacted_map", JSON.stringify(userReactedMap));
-        console.error("更新貼圖失敗：", err);
+        if (olderHit) {
+          olderHit.data.reactions[type] = Math.max(0, (olderHit.data.reactions[type] || 0) - delta);
+          renderSocialWall();
+        }
       } finally {
         pendingReactions.delete(lockKey);
         if (btnEl) btnEl.disabled = false;
@@ -1962,13 +3274,13 @@
     }
 
     /* =========================================
-       10. 頁面切換防呆與本機展示資料重置
+       11. 頁面切換防呆與本機重置
        ========================================= */
     function switchTab(tabName) {
+      vibrateTap();
       if (tabName === "social" && isWorkoutActive && !isPaused) {
         pauseWorkout(true);
       }
-
       if (tabName === "exercise") {
         document.getElementById("socialPausedBanner").classList.add("hidden");
       }
@@ -1977,9 +3289,11 @@
       document.getElementById("tabSocial").classList.toggle("active", tabName === "social");
       document.getElementById("sectionExercise").classList.toggle("active", tabName === "exercise");
       document.getElementById("sectionSocial").classList.toggle("active", tabName === "social");
+      document.getElementById("mainContainer").classList.toggle("workout-wide", tabName === "exercise" && isWorkoutActive);
     }
 
     function resetToHome() {
+      document.getElementById("mainContainer").classList.remove("workout-wide");
       document.getElementById("viewSelect").classList.remove("hidden");
       document.getElementById("viewActive").classList.add("hidden");
       document.getElementById("viewComplete").classList.add("hidden");
@@ -1988,37 +3302,62 @@
     }
 
     function resetLocalDemoData() {
-      const ok = window.confirm("確定要清除這台裝置上的簽到天數、已按讚紀錄與暱稱嗎？（不會影響雲端已發布的貼文）");
+      const ok = window.confirm("確定要清除這台裝置上的簽到天數、本週日曆、累計分鐘數、按讚紀錄與跨裝置代號嗎？（不會影響雲端已發布的動態）");
       if (!ok) return;
 
-      localStorage.removeItem("usr_streak_days");
-      localStorage.removeItem("usr_last_checkin_date");
-      localStorage.removeItem("usr_reacted_map");
-      localStorage.removeItem("usr_display_name");
+      [
+        "usr_streak_days",
+        "usr_last_checkin_date",
+        "usr_total_minutes",
+        "usr_checkin_dates",
+        "usr_reacted_map",
+        "usr_display_name",
+        "usr_sync_code"
+      ].forEach((k) => localStorage.removeItem(k));
 
       userReactedMap = {};
+      syncCode = "";
       document.getElementById("userNameInput").value = "";
-      updateStreakBanner();
+      document.getElementById("syncCodeInput").value = "";
+      document.getElementById("syncStatusMsg").textContent = "";
+      updateRecordUI();
+      renderSocialWall();
       alert("已重置本機測試紀錄！");
     }
 
     // 掛載全域函式供 HTML 按鈕呼叫
-    window.switchTab = switchTab;
-    window.startWorkout = startWorkout;
-    window.toggleVoice = toggleVoice;
-    window.toggleBgm = toggleBgm;
-    window.nextTrack = nextTrack;
-    window.repeatVoice = repeatVoice;
-    window.togglePause = togglePause;
-    window.requestStopWorkout = requestStopWorkout;
-    window.cancelStopWorkout = cancelStopWorkout;
-    window.confirmStopWorkout = confirmStopWorkout;
-    window.publishToWall = publishToWall;
-    window.shareBadge = shareBadge;
-    window.downloadBadge = downloadBadge;
-    window.resetToHome = resetToHome;
-    window.toggleReaction = toggleReaction;
-    window.resetLocalDemoData = resetLocalDemoData;
+    Object.assign(window, {
+      switchTab,
+      startWorkout,
+      toggleFontSize,
+      toggleSpeechRate,
+      toggleVoice,
+      toggleBgm,
+      toggleVoiceMode,
+      onVoiceSliderInput,
+      onBgmSliderInput,
+      stepVoiceVolume,
+      stepBgmVolume,
+      previewVoiceVolume,
+      nextTrack,
+      repeatVoice,
+      togglePause,
+      requestStopWorkout,
+      cancelStopWorkout,
+      confirmStopWorkout,
+      selectPresetName,
+      highlightPresetChips,
+      publishToWall,
+      shareBadge,
+      downloadBadge,
+      resetToHome,
+      setWallFilter,
+      readPostAloud,
+      loadMorePosts,
+      toggleReaction,
+      connectSyncCode,
+      resetLocalDemoData
+    });
   </script>
 </body>
 </html>
