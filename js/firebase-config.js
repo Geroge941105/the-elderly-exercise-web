@@ -3,7 +3,7 @@ import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/1
 import { getFirestore, collection } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB9Ciai00q1Gj3wLQTmEnMTX37UVJAkhbg",
+  apiKey: "AIzaSyB9CiaiOOq1Gj3wLQTmEnMTX37UVJAkhbg",
   authDomain: "the-elderly-exercise-web.firebaseapp.com",
   projectId: "the-elderly-exercise-web",
   storageBucket: "the-elderly-exercise-web.firebasestorage.app",
